@@ -384,8 +384,7 @@ def render_traceability_and_compliance_panel(
             <div style="background: rgba(0, 55, 129, 0.08); border-left: 4px solid #003781; padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
                 <h4 style="margin:0; color:#003781;">Clasificación: {compliance_report.risk_classification.category.value}</h4>
                 <p style="margin: 0.3rem 0 0 0; font-size: 0.9rem;">
-                    <strong>Regulación:</strong> {compliance_report.risk_classification.eu_ai_act_annex} | 
-                    <strong>Marco Legal:</strong> {compliance_report.risk_classification.legal_basis}
+                    <strong>Regulación:</strong> {compliance_report.risk_classification.annex_reference}
                 </p>
             </div>
             """,
@@ -396,7 +395,7 @@ def render_traceability_and_compliance_panel(
         with col_hitl:
             st.markdown("**Supervisión Humana (Art. 14):**")
             st.write(f"- Validación Obligatoria: `{'SÍ' if compliance_report.human_in_the_loop.human_validation_required else 'NO'}`")
-            st.write(f"- Naturaleza: `{compliance_report.human_in_the_loop.decision_nature}`")
+            st.write(f"- Naturaleza: `{'Propuesta Asistida' if compliance_report.human_in_the_loop.is_proposal else 'Decisión Autónoma'}`")
         with col_trans:
             st.markdown("**Transparencia (Art. 12/13):**")
             st.write(f"- Trazabilidad Activa: `{'SÍ' if compliance_report.transparency_audit.has_traceability_logs else 'NO'}`")

@@ -18,8 +18,8 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
-# Create a non-privileged user (security best practice)
-RUN groupadd -r appgroup && useradd -r -g appgroup -u 1001 appuser
+# Create a non-privileged user (security best practice) with home directory
+RUN groupadd -r appgroup && useradd -r -g appgroup -u 1001 -m -d /home/appuser appuser
 
 # Copy dependency definition first to leverage Docker layer caching
 COPY requirements.txt .
