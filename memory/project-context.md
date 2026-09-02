@@ -76,4 +76,11 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
     * **Early Stop / Parada Inmediata**: Instrucción de transición directa a la consolidación de cálculos y generación del JSON final una vez obtenidas las respuestas de las herramientas, eliminando bucles y llamadas duplicadas.
   - En `tests/test_agent.py`, se añadió test unitario `test_system_prompt_zero_redundancy_rules`.
   - Suite de 189 tests unitarios pasando al 100% en Docker (`docker exec guardseguro-ai-app pytest`).
+- **Suite de Tests E2E / Integración en la Web (Validación del Agente AI)**:
+  - Se definieron respuestas correctas predefinidas (ground truth) para cada caso de demostración en `src/ui/sample_cases.py` (`expected_tools`, `expected_status`, `expected_payout`, `expected_is_covered`).
+  - Se implementó el motor de ejecución y evaluación en `src/ui/e2e_runner.py` (`evaluate_single_test_case`, `run_all_e2e_suite`, modelo `TestCaseResult`).
+  - Se añadieron componentes de visualización y botones de copia en `src/ui/components.py` (`render_e2e_suite_metrics`, `render_e2e_test_card`, `render_e2e_copy_button`).
+  - Se integró la nueva pestaña en `app.py` (`🧪 E2E / Integration Tests (Validación del Agente)`), permitiendo ejecutar toda la batería de tests con 1 clic ("▶️ Pasar Todos los Tests"), visualizando métricas globales de ejecución (Tasa de Aprobación, Tests Pasados/Fallados, Tiempo Total), tarjetas individuales con estado `PASS / FAIL` y desglose de los 3 criterios (Herramientas, Resolución, Indemnización), y botón `"copy inform in json"` interactivo por cada caso.
+  - Creada suite de tests en `tests/test_e2e_runner.py`. Suite completa de 194 tests pasando al 100% en Docker (`docker exec guardseguro-ai-app pytest`).
+
 

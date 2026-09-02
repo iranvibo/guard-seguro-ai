@@ -12,7 +12,7 @@ from typing import List
 
 @dataclass(frozen=True)
 class SampleCase:
-    """Structure representing a predefined demonstration claim."""
+    """Structure representing a predefined demonstration claim and its expected ground truth."""
 
     case_id: str
     title: str
@@ -23,6 +23,9 @@ class SampleCase:
     raw_text: str
     expected_status: str
     tags: List[str]
+    expected_tools: List[str]
+    expected_payout: float
+    expected_is_covered: bool
 
 
 SAMPLE_CASES: List[SampleCase] = [
@@ -40,8 +43,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "y abolladuras moderadas en la chapa del capó. Solicita indemnización en su cuenta bancaria "
             "ES9121000418450200051332 o reparación en taller concertado de Allianz."
         ),
-        expected_status="APROBADO",
+        expected_status="Aprobado",
         tags=["Auto", "Granizo", "Rotura de Lunas", "Chapa", "Sin Franquicia"],
+        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
+        expected_payout=350.0,
+        expected_is_covered=True,
     ),
     SampleCase(
         case_id="CASO-02",
@@ -56,8 +62,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "matrícula 9012-KZX se detuvo en autopista debido al desgaste continuado del disco de embrague "
             "y falta de mantenimiento mecánico periódico. Reclama el reembolso íntegro de la factura del taller."
         ),
-        expected_status="DENEGADO",
+        expected_status="Denegado",
         tags=["Auto", "Desgaste", "Avería Mecánica", "Exclusión General", "Sin Cobertura"],
+        expected_tools=["check_policy_coverage"],
+        expected_payout=0.0,
+        expected_is_covered=False,
     ),
     SampleCase(
         case_id="CASO-03",
@@ -73,8 +82,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "sobre la prioridad de paso, posible exceso de velocidad y daños estructurales severos en el chasis "
             "y motor. Los terceros implicados han presentado denuncia y no hay atestado policial concluyente."
         ),
-        expected_status="REQUIERE_PERITAJE",
+        expected_status="Requiere Peritaje",
         tags=["Auto", "Colisión Múltiple", "Terceros", "Daño Estructural", "Peritaje Técnico"],
+        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
+        expected_payout=2220.0,
+        expected_is_covered=True,
     ),
     SampleCase(
         case_id="CASO-04",
@@ -90,8 +102,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "climalit del ventanal del salón y la fractura de la claraboya del ático, requiriendo reposición urgente "
             "de cristalería de la vivienda."
         ),
-        expected_status="APROBADO",
+        expected_status="Aprobado",
         tags=["Hogar", "Fenómenos Atmosféricos", "Cristalería Hogar", "Sin Franquicia"],
+        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
+        expected_payout=290.0,
+        expected_is_covered=True,
     ),
     SampleCase(
         case_id="CASO-05",
@@ -106,8 +121,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "de agua sanitaria bajo el fregadero de la cocina, causando inundación en el suelo y filtración con daños "
             "por humedad en el techo de la vivienda del vecino inferior. Solicita fontanería y reparación urgente."
         ),
-        expected_status="APROBADO",
+        expected_status="Aprobado",
         tags=["Hogar", "Daños por Agua", "Fontanería", "Responsabilidad Civil"],
+        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
+        expected_payout=400.0,
+        expected_is_covered=True,
     ),
     SampleCase(
         case_id="CASO-06",
@@ -122,8 +140,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "desde hace más de un año debido a la corrosión natural de los canalones atascados y el desgaste por falta de "
             "mantenimiento periódico prescrito en la cubierta del inmueble."
         ),
-        expected_status="DENEGADO",
+        expected_status="Denegado",
         tags=["Hogar", "Falta de Mantenimiento", "Deterioro Paulatino", "Sin Cobertura"],
+        expected_tools=["check_policy_coverage"],
+        expected_payout=0.0,
+        expected_is_covered=False,
     ),
 ]
 

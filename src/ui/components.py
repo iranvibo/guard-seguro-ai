@@ -174,6 +174,62 @@ def apply_custom_styles() -> None:
             color: #003781;
         }
 
+        /* E2E Test Suite Styles */
+        .test-card-pass {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid #10B981;
+            border-left: 6px solid #10B981;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+
+        .test-card-fail {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid #EF4444;
+            border-left: 6px solid #EF4444;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1.2rem;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.1);
+        }
+
+        .badge-pass {
+            background-color: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #34D399;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .badge-fail {
+            background-color: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #F87171;
+            padding: 0.3rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .criteria-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.6rem;
+            border-bottom: 1px solid rgba(0, 55, 129, 0.1);
+            font-size: 0.9rem;
+        }
+
         /* Streamlit native component tweaks */
         div[data-testid="stMetricValue"] {
             font-size: 1.5rem !important;
@@ -774,3 +830,254 @@ def render_traceability_and_compliance_panel(
                 mime="application/json",
                 use_container_width=True,
             )
+
+
+def render_e2e_copy_button(
+    claim_input: ClaimInput,
+    anonymized_claim: Optional[AnonymizedClaim],
+    assessment: ClaimAssessment,
+    compliance_report: Optional[EUAIActComplianceReport],
+    unique_key: str,
+) -> None:
+    """Render a unique copy button for a specific test case in the E2E test suite."""
+    report_dict = build_claim_report_json(
+        claim_input=claim_input,
+        anonymized_claim=anonymized_claim,
+        assessment=assessment,
+        compliance_report=compliance_report,
+    )
+    report_json_str = json.dumps(report_dict, indent=2, ensure_ascii=False)
+    json_escaped = html.escape(report_json_str)
+
+    button_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            body {{
+                margin: 0;
+                padding: 0;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                height: 38px;
+                background: transparent;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            }}
+            .copy-test-btn {{
+                background: linear-gradient(135deg, #003781 0%, #005A9C 100%);
+                color: #FFFFFF;
+                border: 1px solid rgba(0, 163, 224, 0.6);
+                border-radius: 6px;
+                padding: 6px 12px;
+                font-size: 12.5px;
+                font-weight: 600;
+                cursor: pointer;
+                box-shadow: 0 2px 5px rgba(0, 55, 129, 0.2);
+                transition: all 0.2s ease-in-out;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                user-select: none;
+            }}
+            .copy-test-btn:hover {{
+                background: linear-gradient(135deg, #004baf 0%, #007AB3 100%);
+                box-shadow: 0 4px 8px rgba(0, 55, 129, 0.3);
+                transform: translateY(-1px);
+            }}
+            .copy-test-btn:active {{
+                transform: translateY(0);
+            }}
+        </style>
+    </head>
+    <body>
+        <button id="btn-{unique_key}" class="copy-test-btn" onclick="copyTestJson_{unique_key}()">
+            <span id="icon-{unique_key}">📋</span>
+            <span id="text-{unique_key}">copy inform in json</span>
+        </button>
+        <textarea id="src-{unique_key}" style="display: none;">{json_escaped}</textarea>
+
+        <script>
+        function copyTestJson_{unique_key}() {{
+            const rawJson = document.getElementById("src-{unique_key}").value;
+            const btn = document.getElementById("btn-{unique_key}");
+            const btnText = document.getElementById("text-{unique_key}");
+            const btnIcon = document.getElementById("icon-{unique_key}");
+
+            function showSuccess() {{
+                btn.style.background = "linear-gradient(135deg, #059669 0%, #10B981 100%)";
+                btn.style.borderColor = "#34D399";
+                btnIcon.textContent = "✅";
+                btnText.textContent = "¡Copiado!";
+                setTimeout(() => {{
+                    btn.style.background = "linear-gradient(135deg, #003781 0%, #005A9C 100%)";
+                    btn.style.borderColor = "rgba(0, 163, 224, 0.6)";
+                    btnIcon.textContent = "📋";
+                    btnText.textContent = "copy inform in json";
+                }}, 2000);
+            }}
+
+            function fallbackCopy(text) {{
+                const tempTextArea = document.createElement("textarea");
+                tempTextArea.value = text;
+                tempTextArea.style.position = "fixed";
+                tempTextArea.style.top = "0";
+                tempTextArea.style.left = "0";
+                tempTextArea.style.opacity = "0";
+                document.body.appendChild(tempTextArea);
+                tempTextArea.focus();
+                tempTextArea.select();
+                try {{
+                    if (document.execCommand('copy')) {{
+                        showSuccess();
+                    }}
+                }} catch (err) {{
+                    console.error(err);
+                }}
+                document.body.removeChild(tempTextArea);
+            }}
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {{
+                navigator.clipboard.writeText(rawJson)
+                    .then(showSuccess)
+                    .catch(() => fallbackCopy(rawJson));
+            }} else {{
+                fallbackCopy(rawJson);
+            }}
+        }}
+        </script>
+    </body>
+    </html>
+    """
+    components.html(button_html, height=42)
+
+
+def render_e2e_suite_metrics(results: list) -> None:
+    """Render the top summary metrics banner for E2E Test Suite."""
+    total = len(results)
+    passed = sum(1 for r in results if r.passed)
+    failed = total - passed
+    pass_rate = round((passed / total * 100), 1) if total > 0 else 0
+    total_time = sum(r.execution_time_seconds for r in results)
+
+    m1, m2, m3, m4, m5 = st.columns(5)
+    with m1:
+        st.metric("Total Tests", total)
+    with m2:
+        st.metric("Tests Pasados", f"✅ {passed}", delta=f"{pass_rate}% Éxito", delta_color="normal")
+    with m3:
+        st.metric("Tests Fallados", f"❌ {failed}", delta=None if failed == 0 else f"{failed} con error", delta_color="inverse")
+    with m4:
+        st.metric("Tasa de Aprobación", f"{pass_rate}%")
+    with m5:
+        st.metric("Tiempo Total Suite", f"{total_time:.2f} s")
+
+
+def render_e2e_test_card(result: Any, test_idx: int) -> None:
+    """Render a comprehensive result card for an E2E test case comparing actual vs expected."""
+    case = result.case
+    status_class = "test-card-pass" if result.passed else "test-card-fail"
+    status_badge = (
+        '<span class="badge-pass">✅ PASS</span>'
+        if result.passed
+        else '<span class="badge-fail">❌ FAIL</span>'
+    )
+
+    col_header, col_btn = st.columns([3, 2])
+    with col_header:
+        st.markdown(
+            f"""
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.3rem;">
+                {status_badge}
+                <strong style="font-size: 1.15rem; color: #003781;">{case.icon} {case.case_id}: {case.title}</strong>
+                <span class="badge-pill" style="background: #003781; color: #fff; font-size: 0.75rem;">{case.policy_type}</span>
+                <span style="color: #6B7280; font-size: 0.85rem;">⏱️ {result.execution_time_seconds:.3f}s</span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col_btn:
+        if result.assessment and result.claim_input:
+            render_e2e_copy_button(
+                claim_input=result.claim_input,
+                anonymized_claim=result.anonymized_claim,
+                assessment=result.assessment,
+                compliance_report=result.compliance_report,
+                unique_key=f"test_{case.case_id.replace('-', '_')}_{test_idx}",
+            )
+
+    if result.error:
+        st.error(f"⚠️ **Error en ejecución del test:** `{result.error}`")
+        return
+
+    # 3 Validation Criteria Table/Grid
+    c1, c2, c3 = st.columns(3)
+
+    # 1. Herramientas a Invocarse
+    with c1:
+        tools_icon = "✅" if result.tools_passed else "❌"
+        expected_tools_str = ", ".join(case.expected_tools)
+        actual_tools_str = ", ".join(result.actual_tools) if result.actual_tools else "Ninguna"
+        st.markdown(
+            f"""
+            <div style="background: rgba(0, 55, 129, 0.04); border: 1px solid rgba(0, 55, 129, 0.15); border-radius: 8px; padding: 0.7rem; height: 100%;">
+                <div style="font-weight: 700; color: #003781; margin-bottom: 0.3rem;">
+                    {tools_icon} 🛠️ 1. Herramientas Llamadas
+                </div>
+                <div style="font-size: 0.82rem; color: #4B5563;">
+                    <strong>Esperadas:</strong> <code>{expected_tools_str}</code><br/>
+                    <strong>Observadas:</strong> <code>{actual_tools_str}</code>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # 2. Resolución / Dictamen
+    with c2:
+        status_icon = "✅" if result.status_passed else "❌"
+        st.markdown(
+            f"""
+            <div style="background: rgba(0, 55, 129, 0.04); border: 1px solid rgba(0, 55, 129, 0.15); border-radius: 8px; padding: 0.7rem; height: 100%;">
+                <div style="font-weight: 700; color: #003781; margin-bottom: 0.3rem;">
+                    {status_icon} ⚖️ 2. Resolución / Dictamen
+                </div>
+                <div style="font-size: 0.82rem; color: #4B5563;">
+                    <strong>Esperada:</strong> <span style="font-weight: 600;">{case.expected_status}</span><br/>
+                    <strong>Observada:</strong> <span style="font-weight: 600;">{result.actual_status}</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # 3. Total a Indemnizar
+    with c3:
+        payout_icon = "✅" if result.payout_passed else "❌"
+        st.markdown(
+            f"""
+            <div style="background: rgba(0, 55, 129, 0.04); border: 1px solid rgba(0, 55, 129, 0.15); border-radius: 8px; padding: 0.7rem; height: 100%;">
+                <div style="font-weight: 700; color: #003781; margin-bottom: 0.3rem;">
+                    {payout_icon} 💶 3. Total a Indemnizar
+                </div>
+                <div style="font-size: 0.82rem; color: #4B5563;">
+                    <strong>Esperado:</strong> <span style="font-weight: 600;">{case.expected_payout:.2f} €</span><br/>
+                    <strong>Observado:</strong> <span style="font-weight: 600;">{result.actual_payout:.2f} €</span>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+    # Collapsible Details for Agent Traces
+    if result.assessment:
+        with st.expander(f"🔍 Ver detalles de ejecución y razonamiento de {case.case_id}", expanded=False):
+            st.markdown(f"**📖 Razonamiento:** {result.assessment.reasoning}")
+            if result.assessment.intermediate_steps:
+                st.markdown("**🔄 Pasos Intermedios:**")
+                for s_idx, step in enumerate(result.assessment.intermediate_steps, start=1):
+                    t_name = step[0].tool if isinstance(step, (tuple, list)) and len(step) >= 1 else getattr(step, 'tool', f'Paso {s_idx}')
+                    st.write(f"- Paso {s_idx}: `{t_name}`")
+            if result.compliance_report:
+                st.caption(f"Certificación EU AI Act: {'✅ Cumple' if result.compliance_report.is_certified else '⚠️ En Revisión'} | Puntuación: {result.compliance_report.compliance_score}%")
+
