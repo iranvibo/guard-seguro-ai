@@ -93,10 +93,10 @@ gantt
 * **Para:** Evitar que datos sensibles salgan del perímetro seguro antes de invocar cualquier LLM comercial.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Función `mask_pii(text: str) -> (masked_text: str, pii_mapping: dict)`.
-- [ ] Capacidad de anonimizar al menos: DNI español, teléfonos móviles/fijos, matrículas y nombres propios.
-- [ ] Función complementaria `unmask_pii(text: str, pii_mapping: dict) -> str` para restaurar los datos en la respuesta final que lee el gestor humano.
-- [ ] Tests unitarios con al menos 5 ejemplos de reclamaciones reales.
+- [x] Función `mask_pii(text: str) -> (masked_text: str, pii_mapping: dict)`.
+- [x] Capacidad de anonimizar al menos: DNI español, teléfonos móviles/fijos, matrículas y nombres propios.
+- [x] Función complementaria `unmask_pii(text: str, pii_mapping: dict) -> str` para restaurar los datos en la respuesta final que lee el gestor humano.
+- [x] Tests unitarios con al menos 5 ejemplos de reclamaciones reales.
 
 ---
 
