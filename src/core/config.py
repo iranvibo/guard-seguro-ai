@@ -3,10 +3,21 @@
 Provides structured, typed settings loaded from environment variables and `.env` files.
 """
 
+import os
 from functools import lru_cache
 from typing import Literal
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+try:
+    import streamlit as st
+
+    if hasattr(st, "secrets"):
+        for _k, _v in st.secrets.items():
+            if isinstance(_v, str) and _k not in os.environ:
+                os.environ[_k] = _v
+except Exception:
+    pass
 
 
 class Settings(BaseSettings):
