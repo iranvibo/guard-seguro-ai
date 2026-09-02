@@ -191,8 +191,8 @@ gantt
 * **Para:** Experimentar de forma visual e inmediata la potencia y robustez del sistema.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Selector con 3 casos de prueba predefinidos (ej: *Tormenta con cobertura*, *Daño no cubierto*, *Caso complejo con terceros*).
-- [ ] Vista en 3 paneles/columnas:
+- [x] Selector con 3 casos de prueba predefinidos (ej: *Tormenta con cobertura*, *Daño no cubierto*, *Caso complejo con terceros*).
+- [x] Vista en 3 paneles/columnas:
   1. **Privacidad:** Comparador antes/después del enmascaramiento PII.
   2. **Resolución:** Tarjeta con dictamen, importes y recomendación.
   3. **Trazabilidad y AI Act:** Pestaña desplegable con el árbol de decisiones y la ficha regulatoria.
