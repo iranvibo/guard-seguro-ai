@@ -133,6 +133,7 @@ class ClaimEvaluatorAgent:
         claim_text: str,
         claim_id: str,
         policy_type: str = "Auto",
+        api_error: Optional[str] = None,
     ) -> ClaimAssessment:
         """Deterministic evaluation pipeline used for offline testing, demos, or fallback.
 
@@ -144,6 +145,7 @@ class ClaimEvaluatorAgent:
             claim_text: Anonymized text of the claim.
             claim_id: Identifier of the claim.
             policy_type: Type of policy (Auto, Hogar).
+            api_error: Optional error string if triggered as fallback from real LLM failure.
 
         Returns:
             Validated ClaimAssessment instance with populated metrics and traces.
@@ -297,12 +299,15 @@ class ClaimEvaluatorAgent:
             tools_count=len(tools_called),
         )
 
-        return parse_claim_assessment_output(
+        parsed = parse_claim_assessment_output(
             raw_output=raw_json_str,
             claim_id=claim_id,
             intermediate_steps=intermediate_steps,
             metrics=metrics,
         )
+        if api_error:
+            parsed.api_error = api_error
+        return parsed
 
     def evaluate(
         self,
@@ -384,11 +389,17 @@ class ClaimEvaluatorAgent:
                 metrics=metrics,
             )
         except Exception as exc:
-            logger.error("Error during LLM agent execution for %s: %s. Falling back to deterministic engine.", target_claim_id, exc)
+            error_msg = str(exc)
+            logger.error(
+                "Error during LLM agent execution for %s: %s. Falling back to deterministic engine.",
+                target_claim_id,
+                error_msg,
+            )
             return self.evaluate_deterministic_mock(
                 claim_text=target_text,
                 claim_id=target_claim_id,
                 policy_type=policy_type,
+                api_error=error_msg,
             )
 
 

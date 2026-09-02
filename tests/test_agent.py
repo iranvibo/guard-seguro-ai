@@ -343,6 +343,28 @@ class TestMockLLMAgentExecution:
             assert assessment.intermediate_steps[0]["tool"] == "check_policy_coverage"
             assert assessment.intermediate_steps[1]["tool"] == "calculate_repair_estimate"
 
+    def test_agent_handles_api_exception_with_fallback_and_api_error(self) -> None:
+        """Verify that when OpenAI API throws an exception (e.g. 429 quota or 401 auth),
+        the agent falls back to deterministic execution and attaches api_error details."""
+        agent = ClaimEvaluatorAgent()
+        agent.settings = Settings(openai_api_key="sk-live-dummy-key-to-trigger-llm")
+
+        simulated_api_error = Exception(
+            "Error code: 429 - {'error': {'message': 'You have no credits remaining.', 'type': 'insufficient_quota'}}"
+        )
+
+        with patch.object(AgentExecutor, "invoke", side_effect=simulated_api_error):
+            assessment = agent.evaluate(
+                claim="Rotura de parabrisas delantero por piedra.",
+                claim_id="CLM-ERR-429",
+            )
+
+            assert assessment.claim_id == "CLM-ERR-429"
+            assert assessment.status == CoverageStatus.APPROVED
+            assert assessment.is_covered is True
+            assert assessment.api_error is not None
+            assert "insufficient_quota" in assessment.api_error or "429" in assessment.api_error
+
 
 class TestFullPipelineIntegration:
     """Validate end-to-end integration: ClaimInput -> AnonymizedClaim -> ClaimAssessment."""

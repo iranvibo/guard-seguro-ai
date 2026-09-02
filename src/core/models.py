@@ -326,6 +326,10 @@ class ClaimAssessment(BaseModel):
         default_factory=ExecutionMetrics,
         description="Execution and observability metrics (latency, token consumption, etc.).",
     )
+    api_error: Optional[str] = Field(
+        default=None,
+        description="Error details if LLM API failed (e.g. invalid key, quota exhausted, network error).",
+    )
     created_at: datetime = Field(
         default_factory=datetime.now,
         description="Timestamp of assessment generation.",

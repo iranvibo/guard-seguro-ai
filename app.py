@@ -30,12 +30,12 @@ def init_session_state() -> None:
     """Initialize session state variables if not already set."""
     if "selected_case_id" not in st.session_state:
         st.session_state.selected_case_id = SAMPLE_CASES[0].case_id
-    if "claim_text" not in st.session_state:
-        st.session_state.claim_text = SAMPLE_CASES[0].raw_text
-    if "policy_type" not in st.session_state:
-        st.session_state.policy_type = "Auto"
+    if "prev_selected_option" not in st.session_state:
+        st.session_state.prev_selected_option = SAMPLE_CASES[0].case_id
     if "last_result" not in st.session_state:
         st.session_state.last_result = None
+    if "last_error" not in st.session_state:
+        st.session_state.last_error = None
 
 
 def main() -> None:
@@ -75,6 +75,12 @@ def main() -> None:
             key="case_selector_widget",
         )
 
+    # Detect case change to clear previous panel
+    if selected_option != st.session_state.get("prev_selected_option"):
+        st.session_state.prev_selected_option = selected_option
+        st.session_state.last_result = None
+        st.session_state.last_error = None
+
     # Sync selection to text
     if selected_option != "CUSTOM":
         sample = get_sample_case_by_id(selected_option)
@@ -111,37 +117,53 @@ def main() -> None:
                 use_container_width=True,
             )
 
-    # Execute Evaluation Pipeline
-    if submitted or st.session_state.last_result is None:
+    # Execute Evaluation Pipeline upon button click
+    if submitted:
+        # Clear bottom panel immediately
+        st.session_state.last_result = None
+        st.session_state.last_error = None
+
         claim_id = f"CLM-{uuid.uuid4().hex[:8].upper()}"
-        claim_input = ClaimInput(
-            claim_id=claim_id,
-            policy_type=policy_type,
-            raw_text=claim_text_input,
-        )
-
-        with st.spinner("🔒 Aplicando filtro PII y ejecutando Agente ReAct con trazabilidad..."):
-            # 1. PII Masking
-            anonymized_claim = anonymize_claim(claim_input)
-
-            # 2. Agent Assessment + EU AI Act Audit
-            assessment, compliance_report = evaluate_claim_with_compliance(
-                claim=anonymized_claim,
+        try:
+            claim_input = ClaimInput(
                 claim_id=claim_id,
                 policy_type=policy_type,
-                force_deterministic=sidebar_config["force_deterministic"],
-                settings=settings,
+                raw_text=claim_text_input,
             )
 
-            st.session_state.last_result = {
-                "claim_input": claim_input,
-                "anonymized_claim": anonymized_claim,
-                "assessment": assessment,
-                "compliance_report": compliance_report,
-            }
+            with st.spinner("🔒 Aplicando filtro PII y ejecutando Agente ReAct con trazabilidad..."):
+                # 1. PII Masking
+                anonymized_claim = anonymize_claim(claim_input)
 
-    # Render 3-Panel Layout
-    if st.session_state.last_result:
+                # 2. Agent Assessment + EU AI Act Audit
+                assessment, compliance_report = evaluate_claim_with_compliance(
+                    claim=anonymized_claim,
+                    claim_id=claim_id,
+                    policy_type=policy_type,
+                    force_deterministic=sidebar_config["force_deterministic"],
+                    settings=settings,
+                )
+
+                st.session_state.last_result = {
+                    "claim_input": claim_input,
+                    "anonymized_claim": anonymized_claim,
+                    "assessment": assessment,
+                    "compliance_report": compliance_report,
+                }
+        except Exception as exc:
+            logger.exception("Error executing evaluation for claim %s: %s", claim_id, exc)
+            st.session_state.last_error = str(exc)
+
+    # Render Bottom Panel (Results, API Error notices, or Prompt)
+    if st.session_state.last_error:
+        st.markdown("---")
+        st.error(
+            f"❌ **Error durante la evaluación del siniestro:**\n\n```\n{st.session_state.last_error}\n```\n\n"
+            f"💡 *Por favor, revise la configuración en el archivo `.env` o la validez de las credenciales.*",
+            icon="🚨",
+        )
+
+    elif st.session_state.last_result:
         res = st.session_state.last_result
         claim_in: ClaimInput = res["claim_input"]
         anon_claim: AnonymizedClaim = res["anonymized_claim"]
@@ -150,12 +172,27 @@ def main() -> None:
 
         st.markdown("---")
 
+        # Explicit API Error Notice if real LLM invocation failed
+        if assessment_res.api_error:
+            st.error(
+                f"🚨 **Fallo en la llamada a la API de OpenAI:**\n\n"
+                f"```\n{assessment_res.api_error}\n```\n\n"
+                f"🛡️ **Modo de Contingencia Activado (Fallback Determinista):** "
+                f"Para garantizar la continuidad operativa y el cumplimiento de SLAs en Allianz Spain, "
+                f"el sistema ha procesado el siniestro mediante el **Motor Determinista de Reglas y Baremos**.",
+                icon="⚠️",
+            )
+
         # 3 Panels
         render_privacy_panel(claim_in, anon_claim)
         st.markdown("---")
         render_resolution_panel(assessment_res)
         st.markdown("---")
         render_traceability_and_compliance_panel(assessment_res, comp_rep)
+
+    else:
+        st.markdown("---")
+        st.info("👆 Haga clic en **'🚀 Evaluar Siniestro'** para iniciar el análisis con filtros de IA Responsable y Gobernanza EU AI Act.", icon="💡")
 
 
 if __name__ == "__main__":
