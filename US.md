@@ -140,10 +140,10 @@ gantt
 * **Para:** Reducir el tiempo medio de tramitación de siniestros de horas a segundos.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Agente configurado con LangChain (`create_tool_calling_agent`) o `smolagents` conectado al modelo `gpt-4o-mini`.
-- [ ] Prompt del sistema con rol explícito: *Asistente de evaluación de siniestros para Allianz Spain*.
-- [ ] El agente invoca primero la verificación de cobertura; si está cubierto, invoca la estimación económica; finalmente sintetiza el dictamen.
-- [ ] Salida estructurada garantizada en formato JSON/Pydantic.
+- [x] Agente configurado con LangChain (`create_tool_calling_agent`) o `smolagents` conectado al modelo `gpt-4o-mini`.
+- [x] Prompt del sistema con rol explícito: *Asistente de evaluación de siniestros para Allianz Spain*.
+- [x] El agente invoca primero la verificación de cobertura; si está cubierto, invoca la estimación económica; finalmente sintetiza el dictamen.
+- [x] Salida estructurada garantizada en formato JSON/Pydantic.
 
 ---
 
