@@ -111,7 +111,7 @@ def main() -> None:
             help="Texto original de la reclamación que puede contener datos personales sensibles (PII).",
         )
 
-        btn_col1, btn_col2 = st.columns([1, 4])
+        btn_col1, btn_col2 = st.columns([1, 2])
         with btn_col1:
             submitted = st.form_submit_button(
                 "🚀 Evaluar Siniestro",
