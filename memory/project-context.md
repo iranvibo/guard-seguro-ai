@@ -6,6 +6,7 @@ updated: 2026-09-02
 # GuardSeguro AI — Contexto del Proyecto y Referencias
 
 ## Documentos Fuente de Referencia
+- [US.md](file:///Users/bdado/VSCode/allianz-python/US.md): Backlog completo de User Stories estructuradas por épicas y criterios de aceptación (DoD).
 - [instructions.md](file:///Users/bdado/VSCode/allianz-python/instructions.md): Especificación funcional, arquitectura del flujo de GuardSeguro AI, stack tecnológico y narrativa para la entrevista.
 - [vacancy.md](file:///Users/bdado/VSCode/allianz-python/vacancy.md): Vacante oficial de Allianz Spain (Senior AI Engineer - GenAI, Ref 102972, CoE Automation & AI).
 
