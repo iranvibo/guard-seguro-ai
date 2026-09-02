@@ -231,9 +231,38 @@ def apply_custom_styles() -> None:
         }
 
         /* Streamlit native component tweaks */
+        div[data-testid="stMetricLabel"] {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            font-size: 0.85rem !important;
+            font-weight: 600 !important;
+            line-height: 1.25 !important;
+        }
+
+        div[data-testid="stMetricLabel"] > div {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        }
+
         div[data-testid="stMetricValue"] {
-            font-size: 1.5rem !important;
+            font-size: 1.45rem !important;
             font-weight: 700 !important;
+        }
+
+        /* Tab buttons responsive sizing */
+        button[data-baseweb="tab"] {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            font-size: 0.87rem !important;
+            font-weight: 600 !important;
+        }
+
+        div[data-baseweb="tab-list"] {
+            gap: 2px !important;
         }
         </style>
         """,

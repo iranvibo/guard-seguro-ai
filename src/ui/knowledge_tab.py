@@ -31,25 +31,25 @@ def render_knowledge_tab() -> None:
 
     m1, m2, m3, m4, m5 = st.columns(5)
     with m1:
-        st.metric("📋 Coberturas Tipificadas", len(categories), help="Garantías con cobertura contractual automática.")
+        st.metric("📋 Coberturas", len(categories), help="Garantías con cobertura contractual tipificada.")
     with m2:
-        st.metric("🚫 Exclusiones de Póliza", len(exclusions), help="Causas tipificadas de denegación directa.")
+        st.metric("🚫 Exclusiones", len(exclusions), help="Causas tipificadas de denegación directa.")
     with m3:
         st.metric("🛠️ Zonas Baremadas", len(zones), help="Piezas y áreas con tarifas de materiales y mano de obra.")
     with m4:
-        st.metric("⚠️ Disparadores de Riesgo", total_risk_triggers, help="Patrones que activan peritaje presencial o investigación.")
+        st.metric("⚠️ Disparadores Riesgo", total_risk_triggers, help="Patrones que activan peritaje presencial o investigación.")
     with m5:
-        st.metric("💶 Tarifa M.O. Oficial", f"{hourly_rate:.2f} €/h", help="Tarifa horaria estándar en red de talleres concertados.")
+        st.metric("💶 Tarifa M.O.", f"{hourly_rate:.2f} €/h", help="Tarifa horaria estándar en red de talleres concertados.")
 
     st.markdown("---")
 
     # 5 Organized Sub-Tabs
     k_tab1, k_tab2, k_tab3, k_tab4, k_tab5 = st.tabs([
-        "🔄 1. Protocolo de Decisión (Flujo ReAct)",
-        "📜 2. Catálogo de Coberturas & Exclusiones",
-        "💶 3. Baremos Oficiales de Reparación",
-        "⚠️ 4. Matriz de Riesgos & Peritaje",
-        "🛡️ 5. Gobernanza e IA Responsable",
+        "🔄 1. Protocolo ReAct",
+        "📜 2. Coberturas & Exclusiones",
+        "💶 3. Baremos de Taller",
+        "⚠️ 4. Matriz de Riesgos",
+        "🛡️ 5. Gobernanza & AI Act",
     ])
 
     # =========================================================================
