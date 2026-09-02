@@ -86,6 +86,9 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
   - En concordancia con las reglas de negocio de seguros y gobernanza (bloqueo de STP / pago automático en casos de litigio o daños estructurales):
     * `expected_payout`: se estableció en `0.0 €` (pago suspendido cautelarmente a la espera del dictamen del perito presencial).
     * `expected_tools`: se definió como `["check_policy_coverage", "assess_claim_risk_and_dispute"]`, suprimiendo `calculate_repair_estimate` ya que no procede una tasación tabulada automática para daños estructurales sin inspección previa en bancada.
-  - Actualizados `tests/test_e2e_runner.py` y suite completa de 194 tests pasando al 100% en verde.
+  - **Calibración de Ground Truth para Casos Multizona / Granizo (CASO-01)**:
+    * En `src/ui/sample_cases.py`, se actualizó `expected_payout` de CASO-01 a `1020.0 €` (antes 350.0 €) para reflejar la agregación real de los dos daños tasados por el baremo: Rotura total de luna delantera (Grave: 585.0 €) + Chapa del capó (Moderado: 435.0 €) = 1.020,00 €.
+    * En `src/agent/claim_agent.py`, se enriqueció el motor determinista offline (`evaluate_deterministic_mock`) para detectar siniestros multizona de lunas + chapa y calcular el desglose combinado correspondiente a 1.020,00 €.
+  - Actualizados `tests/test_e2e_runner.py` y suite completa de 194 tests pasando al 100% en verde en Docker (`docker compose run --rm --entrypoint pytest guardseguro-ai`).
 
 

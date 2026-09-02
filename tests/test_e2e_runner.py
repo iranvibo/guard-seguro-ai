@@ -37,7 +37,7 @@ class TestE2ERunner:
         assert result.status_passed is True
         assert result.payout_passed is True
         assert result.actual_status == "Aprobado"
-        assert result.actual_payout == 350.0
+        assert result.actual_payout == 1020.0
         assert "check_policy_coverage" in result.actual_tools
         assert "calculate_repair_estimate" in result.actual_tools
         assert result.execution_time_seconds > 0

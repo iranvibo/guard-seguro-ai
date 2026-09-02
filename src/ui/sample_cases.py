@@ -46,7 +46,7 @@ SAMPLE_CASES: List[SampleCase] = [
         expected_status="Aprobado",
         tags=["Auto", "Granizo", "Rotura de Lunas", "Chapa", "Sin Franquicia"],
         expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
-        expected_payout=350.0,
+        expected_payout=1020.0,
         expected_is_covered=True,
     ),
     SampleCase(

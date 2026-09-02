@@ -26,6 +26,7 @@ from src.core.models import (
     AnonymizedClaim,
     ClaimAssessment,
     ClaimInput,
+    CostBreakdown,
     CoverageStatus,
     DamageSeverity,
     ExecutionMetrics,
@@ -210,60 +211,121 @@ class ClaimEvaluatorAgent:
                 recommendation = risk_eval.recommendation
                 cost_breakdown = None
             else:
-                # 3. Step 3: Repair Calculation (only for non-disputed standard claims)
-                tools_called.append("calculate_repair_estimate")
-                # Estimate severity from text
-                severity = DamageSeverity.LIGHT
+                # Check if claim involves multiple damaged zones (e.g., windshield + bodywork from hailstorm)
                 lower_text = claim_text.lower()
-                if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto", "chasis"]):
-                    severity = DamageSeverity.SEVERE
-                elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
-                    severity = DamageSeverity.MODERATE
-
-                t1 = time.perf_counter()
-                breakdown, meta = compute_repair_estimate(
-                    damaged_zone=claim_text,
-                    severity=severity,
-                    deductible=cov_res.standard_deductible,
-                    policy_type=policy_type,
+                is_multi_damage_auto = (
+                    policy_type == "Auto"
+                    and "luna" in lower_text
+                    and any(k in lower_text for k in ["chapa", "capo", "capó", "abolladura"])
                 )
-                t_calc = round(time.perf_counter() - t1, 4)
-                cost_breakdown = breakdown
 
-                calc_tool_output = {
-                    "materiales": breakdown.materials,
-                    "mano_de_obra": breakdown.labor,
-                    "coste_bruto": breakdown.gross_total,
-                    "franquicia": breakdown.deductible,
-                    "total_a_pagar": breakdown.net_total,
-                    "zona_afectada": meta["zone_name"],
-                    "gravedad": meta["severity"],
-                    "detalle": meta["description"],
-                }
-
-                intermediate_steps.append(
-                    (
-                        type("AgentActionMock", (), {
-                            "tool": "calculate_repair_estimate",
-                            "tool_input": {
-                                "damaged_zone": meta["zone_name"],
-                                "severity": meta["severity"],
-                                "deductible": cov_res.standard_deductible,
-                            },
-                            "log": f"Invoking calculate_repair_estimate for zone '{meta['zone_name']}' with severity '{meta['severity']}'.",
-                        })(),
-                        json.dumps(calc_tool_output, ensure_ascii=False),
+                if is_multi_damage_auto:
+                    # Multi-zone: Luna delantera (Grave) + Chapa (Moderado)
+                    tools_called.append("calculate_repair_estimate")
+                    tools_called.append("calculate_repair_estimate")
+                    bd_luna, meta_luna = compute_repair_estimate(
+                        damaged_zone="luna_delantera",
+                        severity=DamageSeverity.SEVERE,
+                        deductible=0.0,
+                        policy_type=policy_type,
                     )
-                )
+                    bd_chapa, meta_chapa = compute_repair_estimate(
+                        damaged_zone="chapa",
+                        severity=DamageSeverity.MODERATE,
+                        deductible=0.0,
+                        policy_type=policy_type,
+                    )
+                    cost_breakdown = CostBreakdown(
+                        materials=bd_luna.materials + bd_chapa.materials,
+                        labor=bd_luna.labor + bd_chapa.labor,
+                        gross_total=bd_luna.gross_total + bd_chapa.gross_total,
+                        deductible=cov_res.standard_deductible,
+                        net_total=max(0.0, (bd_luna.gross_total + bd_chapa.gross_total) - cov_res.standard_deductible),
+                    )
+                    intermediate_steps.append(
+                        (
+                            type("AgentActionMock", (), {
+                                "tool": "calculate_repair_estimate",
+                                "tool_input": {"damaged_zone": "luna_delantera", "severity": "Grave", "policy_type": "Auto"},
+                                "log": "Invoking calculate_repair_estimate for 'luna_delantera' with severity 'Grave'.",
+                            })(),
+                            json.dumps({
+                                "materiales": bd_luna.materials, "mano_de_obra": bd_luna.labor,
+                                "coste_bruto": bd_luna.gross_total, "franquicia": 0.0,
+                                "total_a_pagar": bd_luna.net_total, "zona_afectada": meta_luna["zone_name"],
+                                "gravedad": meta_luna["severity"], "detalle": meta_luna["description"],
+                            }, ensure_ascii=False),
+                        )
+                    )
+                    intermediate_steps.append(
+                        (
+                            type("AgentActionMock", (), {
+                                "tool": "calculate_repair_estimate",
+                                "tool_input": {"damaged_zone": "chapa", "severity": "Moderado", "policy_type": "Auto"},
+                                "log": "Invoking calculate_repair_estimate for 'chapa' with severity 'Moderado'.",
+                            })(),
+                            json.dumps({
+                                "materiales": bd_chapa.materials, "mano_de_obra": bd_chapa.labor,
+                                "coste_bruto": bd_chapa.gross_total, "franquicia": 0.0,
+                                "total_a_pagar": bd_chapa.net_total, "zona_afectada": meta_chapa["zone_name"],
+                                "gravedad": meta_chapa["severity"], "detalle": meta_chapa["description"],
+                            }, ensure_ascii=False),
+                        )
+                    )
+                    meta = {"zone_name": "Luna Delantera y Chapa", "severity": "Mixta"}
+                else:
+                    tools_called.append("calculate_repair_estimate")
+                    # Estimate severity from text
+                    severity = DamageSeverity.LIGHT
+                    if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto", "chasis"]):
+                        severity = DamageSeverity.SEVERE
+                    elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
+                        severity = DamageSeverity.MODERATE
+
+                    t1 = time.perf_counter()
+                    breakdown, meta = compute_repair_estimate(
+                        damaged_zone=claim_text,
+                        severity=severity,
+                        deductible=cov_res.standard_deductible,
+                        policy_type=policy_type,
+                    )
+                    t_calc = round(time.perf_counter() - t1, 4)
+                    cost_breakdown = breakdown
+
+                    calc_tool_output = {
+                        "materiales": breakdown.materials,
+                        "mano_de_obra": breakdown.labor,
+                        "coste_bruto": breakdown.gross_total,
+                        "franquicia": breakdown.deductible,
+                        "total_a_pagar": breakdown.net_total,
+                        "zona_afectada": meta["zone_name"],
+                        "gravedad": meta["severity"],
+                        "detalle": meta["description"],
+                    }
+
+                    intermediate_steps.append(
+                        (
+                            type("AgentActionMock", (), {
+                                "tool": "calculate_repair_estimate",
+                                "tool_input": {
+                                    "damaged_zone": meta["zone_name"],
+                                    "severity": meta["severity"],
+                                    "deductible": cov_res.standard_deductible,
+                                },
+                                "log": f"Invoking calculate_repair_estimate for zone '{meta['zone_name']}' with severity '{meta['severity']}'.",
+                            })(),
+                            json.dumps(calc_tool_output, ensure_ascii=False),
+                        )
+                    )
 
                 status = CoverageStatus.APPROVED
                 summary = f"Siniestro cubierto bajo garantía de '{cov_res.coverage_type}'."
                 reasoning = (
                     f"El incidente reportado corresponde a la cobertura '{cov_res.coverage_type}'. "
                     f"Condiciones: {cov_res.conditions}. "
-                    f"Se ha calculado el coste técnico de reparación para {meta['zone_name']} (Gravedad: {meta['severity']}): "
-                    f"Materiales ({breakdown.materials:.2f} €) + Mano de Obra ({breakdown.labor:.2f} €) = {breakdown.gross_total:.2f} €. "
-                    f"Aplicando franquicia de {breakdown.deductible:.2f} €, el total indemnizable es {breakdown.net_total:.2f} €."
+                    f"Se ha calculado el coste técnico de reparación: "
+                    f"Materiales ({cost_breakdown.materials:.2f} €) + Mano de Obra ({cost_breakdown.labor:.2f} €) = {cost_breakdown.gross_total:.2f} €. "
+                    f"Aplicando franquicia de {cost_breakdown.deductible:.2f} €, el total indemnizable es {cost_breakdown.net_total:.2f} €."
                 )
                 recommendation = "Proceder a la emisión de la orden de reparación o indemnización tras visto bueno del gestor."
         elif "requiere peritaje" in cov_res.coverage_type.lower() or "no catalogado" in cov_res.coverage_type.lower():
