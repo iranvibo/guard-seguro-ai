@@ -236,3 +236,25 @@ class TestCalculateRepairEstimateTool:
         }))
         assert res3["coste_bruto"] == 350.0
         assert res3["total_a_pagar"] == 350.0
+
+    def test_policy_type_branch_segregation(self):
+        # In Hogar, 'tejado' or 'cubierta' resolves to Albañilería y Pintura (Hogar)
+        res_hogar = json.loads(calculate_repair_estimate.invoke({
+            "damaged_zone": "reparacion de tejado",
+            "severity": "Moderado",
+            "deductible": 0.0,
+            "policy_type": "Hogar",
+        }))
+        assert "Albañilería" in res_hogar["zona_afectada"]
+        assert res_hogar["coste_bruto"] == 322.5
+
+        # In Auto, 'techo' resolves to Chapa / Carrocería (Auto)
+        res_auto = json.loads(calculate_repair_estimate.invoke({
+            "damaged_zone": "techo abollado",
+            "severity": "Moderado",
+            "deductible": 0.0,
+            "policy_type": "Auto",
+        }))
+        assert "Chapa" in res_auto["zona_afectada"]
+        assert res_auto["coste_bruto"] == 435.0
+

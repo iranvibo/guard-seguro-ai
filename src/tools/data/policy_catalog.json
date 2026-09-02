@@ -253,7 +253,11 @@
         "deterioro paulatino",
         "averia mecanica ordinaria",
         "oxido",
-        "corrosion natural"
+        "corrosion",
+        "corrosion natural",
+        "canalones atascados",
+        "falta de mantenimiento periodico",
+        "mantenimiento periodico"
       ]
     },
     {

@@ -5,6 +5,7 @@
   "zones": {
     "chapa": {
       "name": "Chapa / Carrocería",
+      "policy_types": ["Auto"],
       "aliases": [
         "chapa",
         "carroceria",
@@ -12,6 +13,8 @@
         "aleta",
         "capo",
         "techo",
+        "techo vehiculo",
+        "techo coche",
         "puerta",
         "panel",
         "abolladura",
@@ -41,6 +44,7 @@
     },
     "pintura": {
       "name": "Pintura y Acabado",
+      "policy_types": ["Auto"],
       "aliases": [
         "pintura",
         "rayón",
@@ -75,6 +79,7 @@
     },
     "luna_delantera": {
       "name": "Luna Delantera / Parabrisas",
+      "policy_types": ["Auto"],
       "aliases": [
         "luna delantera",
         "parabrisas",
@@ -110,6 +115,7 @@
     },
     "parachoques": {
       "name": "Parachoques / Paragolpes",
+      "policy_types": ["Auto"],
       "aliases": [
         "parachoques",
         "paragolpes",
@@ -144,6 +150,7 @@
     },
     "motor": {
       "name": "Motor / Mecánica",
+      "policy_types": ["Auto"],
       "aliases": [
         "motor",
         "mecanica",
@@ -181,6 +188,7 @@
     },
     "retrovisor": {
       "name": "Retrovisor / Espejos",
+      "policy_types": ["Auto"],
       "aliases": [
         "retrovisor",
         "espejo",
@@ -211,6 +219,7 @@
     },
     "faros": {
       "name": "Faros y Óptica",
+      "policy_types": ["Auto"],
       "aliases": [
         "faro",
         "faros",
@@ -245,6 +254,7 @@
     },
     "cerradura": {
       "name": "Cerradura y Bombines",
+      "policy_types": ["Auto", "Hogar"],
       "aliases": [
         "cerradura",
         "bombin",
@@ -275,6 +285,7 @@
     },
     "fontaneria": {
       "name": "Fontanería / Daños por Agua (Hogar)",
+      "policy_types": ["Hogar"],
       "aliases": [
         "fontaneria",
         "fontanería",
@@ -310,6 +321,7 @@
     },
     "cristaleria_hogar": {
       "name": "Cristalería y Ventanas (Hogar)",
+      "policy_types": ["Hogar"],
       "aliases": [
         "cristaleria hogar",
         "cristal ventana",
@@ -349,11 +361,18 @@
     },
     "albanileria_pintura_hogar": {
       "name": "Albañilería y Pintura (Hogar)",
+      "policy_types": ["Hogar"],
       "aliases": [
         "albanileria",
         "albanileria hogar",
         "pintura hogar",
+        "tejado",
+        "cubierta",
         "techo",
+        "techo vivienda",
+        "reparacion tejado",
+        "canalones",
+        "inmueble",
         "pared",
         "paramento",
         "humedad techo",

@@ -42,3 +42,15 @@ class TestRiskAssessorTool:
         assert "alertas_detectadas" in data
         assert len(data["alertas_detectadas"]) >= 1
         assert "recomendacion_accion" in data
+
+    def test_claim_with_lack_of_maintenance_and_chronic_leak(self) -> None:
+        text = (
+            "Goteras y filtraciones continuadas desde hace más de un año debido a la corrosión natural "
+            "de los canalones y el desgaste por falta de mantenimiento en el tejado."
+        )
+        eval_result = evaluate_claim_risk(text)
+        assert eval_result.requires_expert_appraisal is True
+        assert len(eval_result.alerts) >= 2
+        assert any("mantenimiento" in a.lower() for a in eval_result.alerts)
+        assert any("más de un año" in a.lower() or "dilación" in a.lower() for a in eval_result.alerts)
+

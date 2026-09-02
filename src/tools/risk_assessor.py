@@ -50,6 +50,14 @@ SEVERITY_AND_FRAUD_INDICATORS = [
     ("siniestro total", "Indicios de posible siniestro total técnico o económico."),
     ("fraude", "Alerta de posible simulación o fraude que requiere intervención de la unidad antifraude."),
     ("incoherencia", "Incoherencia entre la dinámica relatada y la magnitud de los daños."),
+    ("falta de mantenimiento", "Indicios de falta de mantenimiento o desgaste paulatino que exigen dictamen pericial o verificación de exclusión."),
+    ("mantenimiento deficiente", "Posible falta de mantenimiento preventivo o correctivo."),
+    ("corrosion natural", "Corrosión natural o deterioro progresivo de elementos."),
+    ("mas de un ano", "Siniestro reportado con dilación superior a un año o evolución crónica continuada."),
+    ("mas de 1 ano", "Siniestro prolongado durante más de un año sin notificación inmediata."),
+    ("filtraciones continuadas", "Filtraciones y humedades continuadas en el tiempo que requieren verificar origen y agravación del daño."),
+    ("cubierta", "Afectación de cubierta o elementos de estanqueidad exterior del inmueble que requieren peritaje."),
+    ("tejado", "Daños en tejado o cubierta del inmueble que requieren peritaje de estanqueidad."),
 ]
 
 

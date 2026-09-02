@@ -214,6 +214,7 @@ class ClaimEvaluatorAgent:
                 damaged_zone=claim_text,
                 severity=severity,
                 deductible=cov_res.standard_deductible,
+                policy_type=policy_type,
             )
             t_calc = round(time.perf_counter() - t1, 4)
             cost_breakdown = breakdown

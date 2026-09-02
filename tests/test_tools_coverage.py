@@ -107,6 +107,16 @@ class TestVerifyPolicyCoverageExclusions:
         assert res_home_in_auto.is_covered is False
         assert "Inmuebles" in res_home_in_auto.coverage_type
 
+    def test_hogar_lack_of_maintenance_exclusion(self):
+        """Ensure wear and tear / lack of maintenance in Hogar is excluded."""
+        res = verify_policy_coverage(
+            "Goteras y filtraciones por corrosión natural y falta de mantenimiento periódico",
+            policy_type="Hogar",
+        )
+        assert res.is_covered is False
+        assert "Desgaste" in res.coverage_type or "Exclusión" in res.coverage_type
+
+
 
 class TestVerifyPolicyCoverageEdgeCases:
     """Tests for edge cases, missing data and uncatalogued claims."""
