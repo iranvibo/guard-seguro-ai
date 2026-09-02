@@ -24,6 +24,7 @@ services:
       - STREAMLIT_SERVER_ADDRESS=0.0.0.0
     volumes:
       - ./src:/app/src:ro
+      - ./tests:/app/tests:ro
       - ./app.py:/app/app.py:ro
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]

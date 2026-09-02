@@ -28,8 +28,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# Copy application source code
+# Copy application source code and tests
 COPY src/ ./src/
+COPY tests/ ./tests/
 COPY app.py .
 
 # Adjust permissions for non-root user

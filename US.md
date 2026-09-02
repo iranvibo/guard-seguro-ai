@@ -76,9 +76,9 @@ gantt
 * **Para:** Asegurar contratos de datos estrictos y tipados entre todos los módulos independientes.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Esquema `ClaimInput` definido (texto original, ID del siniestro, fecha).
-- [ ] Esquema `AnonymizedClaim` definido (texto procesado, mapeo de tokens enmascarados).
-- [ ] Esquema `ClaimAssessment` definido (estado de cobertura: *Aprobado/Denegado/Requiere Peritaje*, desglose de costes, franquicia, razonamiento).
+- [x] Esquema `ClaimInput` definido (texto original, ID del siniestro, fecha).
+- [x] Esquema `AnonymizedClaim` definido (texto procesado, mapeo de tokens enmascarados).
+- [x] Esquema `ClaimAssessment` definido (estado de cobertura: *Aprobado/Denegado/Requiere Peritaje*, desglose de costes, franquicia, razonamiento).
 
 ---
 

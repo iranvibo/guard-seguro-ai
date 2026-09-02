@@ -46,4 +46,6 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
 
 ## 3. Estado de Implementación
 - **US-01 (Cimientos & Docker)**: ✅ Completada. Estructura modular `src/` (`core`, `privacy`, `tools`, `agent`, `compliance`), `Dockerfile` no-root con Python 3.11-slim, `docker-compose.yml`, `requirements.txt`, `.env.example`, `.dockerignore`, `.gitignore` y `src/core/config.py` con validación de entorno.
+- **US-02 (Modelos de Datos & Estructuras Base)**: ✅ Completada. Esquemas fuertemente tipados en Pydantic v2 en `src/core/models.py` (`ClaimInput`, `AnonymizedClaim`, `CoverageStatus`, `DamageSeverity`, `CoverageCheckResult`, `CostBreakdown`, `ClaimAssessment`), reexportados en `src/core/__init__.py`, suite de tests unitarios en `tests/test_models.py` con 100% de tests pasando en Docker.
+
 

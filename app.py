@@ -41,9 +41,10 @@ def main() -> None:
         )
 
     st.info(
-        "🚀 **Cimientos de GuardSeguro AI inicializados con éxito (US-01).**\n\n"
-        "El entorno de desarrollo, la estructura modular, la contenerización Docker "
-        "y la gestión segura de variables de entorno se encuentran listos para recibir los modelos y la lógica de negocio."
+        "🚀 **Cimientos y Modelos de Datos de GuardSeguro AI listos (US-01 & US-02).**\n\n"
+        "La arquitectura modular, contenerización Docker, gestión segura de secretos y contratos "
+        "de datos fuertemente tipados (`ClaimInput`, `AnonymizedClaim`, `ClaimAssessment`) "
+        "están plenamente operativos y validados mediante tests automatizados."
     )
 
 
