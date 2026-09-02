@@ -343,27 +343,40 @@ class TestMockLLMAgentExecution:
             assert assessment.intermediate_steps[0]["tool"] == "check_policy_coverage"
             assert assessment.intermediate_steps[1]["tool"] == "calculate_repair_estimate"
 
-    def test_agent_handles_api_exception_with_fallback_and_api_error(self) -> None:
-        """Verify that when OpenAI API throws an exception (e.g. 429 quota or 401 auth),
-        the agent falls back to deterministic execution and attaches api_error details."""
+    def test_agent_raises_runtime_error_on_api_exception_without_fallback(self) -> None:
+        """Verify that when OpenAI API throws an exception (e.g. 401 auth or 429 quota),
+        the agent raises RuntimeError and does NOT fall back to deterministic evaluation."""
         agent = ClaimEvaluatorAgent()
         agent.settings = Settings(openai_api_key="sk-live-dummy-key-to-trigger-llm")
 
         simulated_api_error = Exception(
-            "Error code: 429 - {'error': {'message': 'You have no credits remaining.', 'type': 'insufficient_quota'}}"
+            "Error code: 401 - Incorrect API key provided"
         )
 
         with patch.object(AgentExecutor, "invoke", side_effect=simulated_api_error):
-            assessment = agent.evaluate(
+            with pytest.raises(RuntimeError) as exc_info:
+                agent.evaluate(
+                    claim="Rotura de parabrisas delantero por piedra.",
+                    claim_id="CLM-ERR-401",
+                    force_deterministic=False,
+                )
+
+            assert "Error en la llamada a la API de OpenAI" in str(exc_info.value)
+            assert "401" in str(exc_info.value)
+
+    def test_agent_raises_value_error_when_no_api_key_in_openai_mode(self) -> None:
+        """Verify that when OpenAI mode is selected without an API key, a ValueError is raised."""
+        agent = ClaimEvaluatorAgent()
+        agent.settings = Settings(openai_api_key="")
+
+        with pytest.raises(ValueError) as exc_info:
+            agent.evaluate(
                 claim="Rotura de parabrisas delantero por piedra.",
-                claim_id="CLM-ERR-429",
+                claim_id="CLM-NO-KEY",
+                force_deterministic=False,
             )
 
-            assert assessment.claim_id == "CLM-ERR-429"
-            assert assessment.status == CoverageStatus.APPROVED
-            assert assessment.is_covered is True
-            assert assessment.api_error is not None
-            assert "insufficient_quota" in assessment.api_error or "429" in assessment.api_error
+        assert "API Key de OpenAI no está configurada" in str(exc_info.value)
 
 
 class TestFullPipelineIntegration:

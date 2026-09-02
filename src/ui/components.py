@@ -351,13 +351,6 @@ def render_traceability_and_compliance_panel(
     )
 
     with tab_obs:
-        if assessment.api_error:
-            st.error(
-                f"⚠️ **Incidencia con la API LLM:**\n\n`{assessment.api_error}`\n\n"
-                f"*El sistema ejecutó el motor determinista de respaldo.*",
-                icon="🚨",
-            )
-
         if assessment.metrics:
             met = assessment.metrics
             c1, c2, c3, c4 = st.columns(4)

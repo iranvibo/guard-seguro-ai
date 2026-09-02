@@ -159,7 +159,7 @@ def main() -> None:
         st.markdown("---")
         st.error(
             f"❌ **Error durante la evaluación del siniestro:**\n\n```\n{st.session_state.last_error}\n```\n\n"
-            f"💡 *Por favor, revise la configuración en el archivo `.env` o la validez de las credenciales.*",
+            f"💡 *Para resolverlo, revise su clave `OPENAI_API_KEY` o seleccione el modo **'Deterministic Engine (Offline / Alta Fidelidad)'** en la barra lateral.*",
             icon="🚨",
         )
 
@@ -171,17 +171,6 @@ def main() -> None:
         comp_rep = res["compliance_report"]
 
         st.markdown("---")
-
-        # Explicit API Error Notice if real LLM invocation failed
-        if assessment_res.api_error:
-            st.error(
-                f"🚨 **Fallo en la llamada a la API de OpenAI:**\n\n"
-                f"```\n{assessment_res.api_error}\n```\n\n"
-                f"🛡️ **Modo de Contingencia Activado (Fallback Determinista):** "
-                f"Para garantizar la continuidad operativa y el cumplimiento de SLAs en Allianz Spain, "
-                f"el sistema ha procesado el siniestro mediante el **Motor Determinista de Reglas y Baremos**.",
-                icon="⚠️",
-            )
 
         # 3 Panels
         render_privacy_panel(claim_in, anon_claim)

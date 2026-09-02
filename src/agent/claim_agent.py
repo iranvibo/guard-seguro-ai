@@ -339,17 +339,19 @@ class ClaimEvaluatorAgent:
             target_claim_id = claim_id or "CLM-UNKNOWN"
             target_text = str(claim)
 
-        # 2. Check if we should use deterministic mock or real LLM
-        if force_deterministic or not self.settings.is_api_key_configured:
-            if not force_deterministic:
-                logger.info(
-                    "OpenAI API key not provided. Falling back to deterministic tool evaluation for claim %s",
-                    target_claim_id,
-                )
+        # 2. Execution Mode Decision
+        if force_deterministic:
             return self.evaluate_deterministic_mock(
                 claim_text=target_text,
                 claim_id=target_claim_id,
                 policy_type=policy_type,
+            )
+
+        # Mode is OpenAI -> Require configured API key
+        if not self.settings.is_api_key_configured:
+            raise ValueError(
+                "La API Key de OpenAI no está configurada. "
+                "Para evaluar con el modelo OpenAI proporcione una clave válida o active el modo 'Deterministic Engine' en la barra lateral."
             )
 
         # 3. Real LLM Tool-Calling Agent Execution with Auditing Callback (US-07)
@@ -391,16 +393,13 @@ class ClaimEvaluatorAgent:
         except Exception as exc:
             error_msg = str(exc)
             logger.error(
-                "Error during LLM agent execution for %s: %s. Falling back to deterministic engine.",
+                "Error during LLM agent execution for %s: %s",
                 target_claim_id,
                 error_msg,
             )
-            return self.evaluate_deterministic_mock(
-                claim_text=target_text,
-                claim_id=target_claim_id,
-                policy_type=policy_type,
-                api_error=error_msg,
-            )
+            raise RuntimeError(
+                f"Error en la llamada a la API de OpenAI ({self.settings.openai_model_name}): {error_msg}"
+            ) from exc
 
 
 def evaluate_claim(
