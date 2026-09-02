@@ -69,3 +69,11 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
 - **Alineación de Supervisión Humana (EU AI Act Art. 14 / Human-in-the-Loop)**:
   - En `src/agent/prompts.py`, se reforzó la instrucción del `SYSTEM_PROMPT` para el campo `recommendation`, exigiendo que el LLM redacte siempre su dictamen como una propuesta asistida dirigida expresamente al gestor humano o tramitador (ej: *"Se propone al gestor humano validar y aprobar...", "Se recomienda al tramitador derivar a peritaje..."*).
   - En `src/compliance/auditor.py`, se amplió el diccionario de términos reconocidos por `_evaluate_human_in_the_loop` (*gestor, tramitador, supervisión, propuesta, validación, peritaje*) para garantizar que las auditorías regulatorias reflejen consistentemente el estado **✅ Cumple**. Suite de 188 tests unitarios pasando al 100% en Docker.
+- **Optimización de Eficiencia de Agente y Cero Redundancia (Zero Redundancy & Tool Efficiency)**:
+  - En `src/agent/prompts.py`, se integró una sección estricta de directivas en el `SYSTEM_PROMPT` (`REGLAS DE EFICIENCIA Y NO REDUNDANCIA`):
+    * Cada herramienta oficial se restringe a **como máximo una ejecución por entidad o zona** (`check_policy_coverage` 1x, `assess_claim_risk_and_dispute` 1x, y `calculate_repair_estimate` exactamente 1x por zona afectada diferenciada).
+    * Prohibición expresa de re-consultar o confirmar baremos de zonas ya calculadas previamente.
+    * **Early Stop / Parada Inmediata**: Instrucción de transición directa a la consolidación de cálculos y generación del JSON final una vez obtenidas las respuestas de las herramientas, eliminando bucles y llamadas duplicadas.
+  - En `tests/test_agent.py`, se añadió test unitario `test_system_prompt_zero_redundancy_rules`.
+  - Suite de 189 tests unitarios pasando al 100% en Docker (`docker exec guardseguro-ai-app pytest`).
+

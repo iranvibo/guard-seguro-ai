@@ -53,6 +53,12 @@ class TestAgentPrompts:
         assert "Denegado" in SYSTEM_PROMPT
         assert "Requiere Peritaje" in SYSTEM_PROMPT
 
+    def test_system_prompt_zero_redundancy_rules(self) -> None:
+        """Verify the system prompt enforces single tool execution and early stop."""
+        assert "ZERO REDUNDANCY" in SYSTEM_PROMPT or "Cero llamadas duplicadas" in SYSTEM_PROMPT
+        assert "COMO MÁXIMO UNA VEZ" in SYSTEM_PROMPT
+        assert "Early Stop" in SYSTEM_PROMPT or "Parada Inmediata" in SYSTEM_PROMPT
+
     def test_prompt_template_structure(self) -> None:
         """Verify ChatPromptTemplate input variables and structure."""
         prompt_template = get_claim_prompt_template()
