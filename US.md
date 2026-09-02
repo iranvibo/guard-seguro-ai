@@ -205,10 +205,10 @@ gantt
 * **Para:** Validar la capacidad de despliegue en producción, reproducibilidad del entorno, portabilidad y buenas prácticas de ingeniería de software y LLMOps.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Imagen Docker testeada y ejecutable localmente mediante `docker compose up --build`.
-- [ ] Aplicación desplegada en Streamlit Community Cloud, Hugging Face Spaces o plataforma basada en contenedores.
-- [ ] Secretos (`OPENAI_API_KEY`) gestionados de forma segura mediante inyección en `.env` / consola de la nube (sin hardcodear en el repositorio ni en la imagen Docker).
-- [ ] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de despliegue y ejecución con Docker, Guía de ejecución manual en Python y Justificación técnica para Allianz.
+- [x] Imagen Docker testeada y ejecutable localmente mediante `docker compose up --build`.
+- [x] Aplicación desplegada en Streamlit Community Cloud, Hugging Face Spaces o plataforma basada en contenedores.
+- [x] Secretos (`OPENAI_API_KEY`) gestionados de forma segura mediante inyección en `.env` / consola de la nube (sin hardcodear en el repositorio ni en la imagen Docker).
+- [x] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de despliegue y ejecución con Docker, Guía de ejecución manual en Python y Justificación técnica para Allianz.
 
 ---
 

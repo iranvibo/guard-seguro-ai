@@ -26,7 +26,6 @@ dist/
 .pytest_cache/
 .coverage
 htmlcov/
-tests/
 
 # IDE & OS specific
 .vscode/
