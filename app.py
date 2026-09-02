@@ -190,9 +190,7 @@ def main() -> None:
         st.markdown("---")
         render_traceability_and_compliance_panel(assessment_res, comp_rep)
 
-    else:
-        st.markdown("---")
-        st.info("👆 Haga clic en **'🚀 Evaluar Siniestro'** para iniciar el análisis con filtros de IA Responsable y Gobernanza EU AI Act.", icon="💡")
+
 
 
 if __name__ == "__main__":
