@@ -9,7 +9,7 @@ import logging
 import re
 from typing import Any, Dict, List, Optional
 
-from src.core.models import ClaimAssessment, CostBreakdown, CoverageStatus
+from src.core.models import ClaimAssessment, CostBreakdown, CoverageStatus, ExecutionMetrics
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +65,10 @@ def format_intermediate_steps(intermediate_steps: Optional[List[Any]]) -> List[D
     """Format LangChain intermediate step tuples into audit-friendly dictionaries.
 
     Args:
-        intermediate_steps: List of (AgentAction, observation) tuples from AgentExecutor.
+        intermediate_steps: List of (AgentAction, observation) tuples or trace dicts.
 
     Returns:
-        Structured list of audit dictionaries with tool name, inputs, observation and log.
+        Structured list of audit dictionaries with tool name, inputs, observation, thought, and log.
     """
     if not intermediate_steps:
         return []
@@ -95,11 +95,17 @@ def format_intermediate_steps(intermediate_steps: Optional[List[Any]]) -> List[D
                         "tool": tool_name,
                         "tool_input": tool_input,
                         "observation": obs_payload,
+                        "thought": action_log.strip() if action_log else "",
                         "log": action_log,
                     }
                 )
             elif isinstance(step, dict):
-                formatted.append(step)
+                entry = dict(step)
+                if "step_number" not in entry:
+                    entry["step_number"] = idx
+                if "thought" not in entry and "log" in entry:
+                    entry["thought"] = entry["log"]
+                formatted.append(entry)
             else:
                 formatted.append({"step_number": idx, "raw_step": str(step)})
         except Exception as exc:
@@ -113,6 +119,7 @@ def parse_claim_assessment_output(
     raw_output: str,
     claim_id: str,
     intermediate_steps: Optional[List[Any]] = None,
+    metrics: Optional[ExecutionMetrics] = None,
 ) -> ClaimAssessment:
     """Parse raw agent string output into a validated ClaimAssessment model.
 
@@ -120,12 +127,14 @@ def parse_claim_assessment_output(
         raw_output: String output returned by the agent.
         claim_id: Unique claim identifier.
         intermediate_steps: Optional list of intermediate steps from execution.
+        metrics: Optional execution metrics (latency, token usage, cost).
 
     Returns:
         Validated ClaimAssessment Pydantic model instance.
     """
     formatted_steps = format_intermediate_steps(intermediate_steps)
     json_data = extract_json_from_text(raw_output)
+    execution_metrics = metrics or ExecutionMetrics()
 
     if json_data:
         try:
@@ -186,6 +195,7 @@ def parse_claim_assessment_output(
                 reasoning=reasoning,
                 recommendation=recommendation,
                 intermediate_steps=formatted_steps,
+                metrics=execution_metrics,
             )
         except Exception as exc:
             logger.error("Error building ClaimAssessment from JSON payload: %s. Using fallback.", exc)
@@ -203,4 +213,5 @@ def parse_claim_assessment_output(
         reasoning=raw_output or "El agente no produjo una respuesta estructurada.",
         recommendation="Revisión obligatoria por gestor humano debido a salida no estructurada.",
         intermediate_steps=formatted_steps,
+        metrics=execution_metrics,
     )

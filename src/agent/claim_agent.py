@@ -6,6 +6,7 @@ strongly typed, auditable ClaimAssessment resolutions.
 
 import json
 import logging
+import time
 from typing import Any, List, Optional, Union
 
 from langchain.agents import AgentExecutor, create_tool_calling_agent
@@ -13,8 +14,13 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.tools import BaseTool
 from langchain_openai import ChatOpenAI
 
+from src.agent.observability import (
+    AgentAuditorCallbackHandler,
+    calculate_token_cost,
+    estimate_text_tokens,
+)
 from src.agent.parser import parse_claim_assessment_output
-from src.agent.prompts import get_claim_prompt_template
+from src.agent.prompts import SYSTEM_PROMPT, get_claim_prompt_template
 from src.core.config import Settings, get_settings
 from src.core.models import (
     AnonymizedClaim,
@@ -22,6 +28,7 @@ from src.core.models import (
     ClaimInput,
     CoverageStatus,
     DamageSeverity,
+    ExecutionMetrics,
 )
 from src.tools.policy_coverage import check_policy_coverage, verify_policy_coverage
 from src.tools.repair_calculator import calculate_repair_estimate, compute_repair_estimate
@@ -82,7 +89,7 @@ def build_claim_agent(
 
 
 class ClaimEvaluatorAgent:
-    """Orchestrator for automated claim evaluation with ReAct tool-calling and governance."""
+    """Orchestrator for automated claim evaluation with ReAct tool-calling, observability and governance."""
 
     def __init__(
         self,
@@ -130,7 +137,8 @@ class ClaimEvaluatorAgent:
         """Deterministic evaluation pipeline used for offline testing, demos, or fallback.
 
         Executes the exact same underlying tools (verify_policy_coverage & compute_repair_estimate)
-        and constructs a fully verified ClaimAssessment with realistic intermediate steps.
+        and constructs a fully verified ClaimAssessment with realistic intermediate steps,
+        latency measurements, and token consumption metrics (US-07).
 
         Args:
             claim_text: Anonymized text of the claim.
@@ -138,12 +146,16 @@ class ClaimEvaluatorAgent:
             policy_type: Type of policy (Auto, Hogar).
 
         Returns:
-            Validated ClaimAssessment instance.
+            Validated ClaimAssessment instance with populated metrics and traces.
         """
         logger.info("Executing deterministic claim evaluation for %s", claim_id)
+        start_time = time.perf_counter()
+        tools_called: List[str] = ["check_policy_coverage"]
 
         # 1. Step 1: Coverage Check Tool
+        t0 = time.perf_counter()
         cov_res = verify_policy_coverage(damage_type=claim_text, policy_type=policy_type)
+        t_cov = round(time.perf_counter() - t0, 4)
 
         cov_tool_output = {
             "cubierto": cov_res.is_covered,
@@ -167,6 +179,7 @@ class ClaimEvaluatorAgent:
         # 2. Step 2: Repair Calculation (if covered)
         cost_breakdown = None
         if cov_res.is_covered:
+            tools_called.append("calculate_repair_estimate")
             # Estimate severity from text
             severity = DamageSeverity.LIGHT
             lower_text = claim_text.lower()
@@ -175,11 +188,13 @@ class ClaimEvaluatorAgent:
             elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
                 severity = DamageSeverity.MODERATE
 
+            t1 = time.perf_counter()
             breakdown, meta = compute_repair_estimate(
                 damaged_zone=claim_text,
                 severity=severity,
                 deductible=cov_res.standard_deductible,
             )
+            t_calc = round(time.perf_counter() - t1, 4)
             cost_breakdown = breakdown
 
             calc_tool_output = {
@@ -256,10 +271,37 @@ class ClaimEvaluatorAgent:
             "recommendation": recommendation,
         }
 
+        # Calculate metrics (US-07)
+        raw_json_str = json.dumps(synthetic_payload, ensure_ascii=False)
+        total_duration = round(max(0.001, time.perf_counter() - start_time), 4)
+
+        # Estimate realistic token counts
+        prompt_text = f"{SYSTEM_PROMPT}\nclaim_id: {claim_id}\npolicy_type: {policy_type}\nclaim_text: {claim_text}"
+        prompt_tokens = estimate_text_tokens(prompt_text)
+        completion_tokens = estimate_text_tokens(raw_json_str)
+        total_tokens = prompt_tokens + completion_tokens
+        cost_usd = calculate_token_cost(
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            model_name=self.settings.openai_model_name,
+        )
+
+        metrics = ExecutionMetrics(
+            execution_time_seconds=total_duration,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            total_tokens=total_tokens,
+            estimated_cost_usd=cost_usd,
+            model_name=self.settings.openai_model_name,
+            tools_called=tools_called,
+            tools_count=len(tools_called),
+        )
+
         return parse_claim_assessment_output(
-            raw_output=json.dumps(synthetic_payload, ensure_ascii=False),
+            raw_output=raw_json_str,
             claim_id=claim_id,
             intermediate_steps=intermediate_steps,
+            metrics=metrics,
         )
 
     def evaluate(
@@ -269,7 +311,7 @@ class ClaimEvaluatorAgent:
         policy_type: str = "Auto",
         force_deterministic: bool = False,
     ) -> ClaimAssessment:
-        """Evaluate a claim end-to-end through the ReAct agent.
+        """Evaluate a claim end-to-end through the ReAct agent with observability tracking.
 
         Args:
             claim: AnonymizedClaim model, ClaimInput model, or raw string.
@@ -305,7 +347,10 @@ class ClaimEvaluatorAgent:
                 policy_type=policy_type,
             )
 
-        # 3. Real LLM Tool-Calling Agent Execution
+        # 3. Real LLM Tool-Calling Agent Execution with Auditing Callback (US-07)
+        auditor = AgentAuditorCallbackHandler(model_name=self.settings.openai_model_name)
+        start_time = time.perf_counter()
+
         try:
             logger.info("Invoking LLM ReAct agent for claim %s", target_claim_id)
             inputs = {
@@ -313,15 +358,30 @@ class ClaimEvaluatorAgent:
                 "policy_type": policy_type,
                 "claim_text": target_text,
             }
-            result = self.executor.invoke(inputs)
+            result = self.executor.invoke(inputs, config={"callbacks": [auditor]})
 
             raw_output = result.get("output", "")
             intermediate_steps = result.get("intermediate_steps", [])
+
+            metrics = auditor.get_metrics()
+            # If start_time / latency was captured from external timer
+            if metrics.execution_time_seconds == 0.0:
+                metrics.execution_time_seconds = round(max(0.001, time.perf_counter() - start_time), 3)
+
+            # Ensure tool count and names match if captured by callback
+            if not metrics.tools_called and intermediate_steps:
+                metrics.tools_called = [
+                    getattr(step[0], "tool", "unknown_tool")
+                    for step in intermediate_steps
+                    if isinstance(step, (tuple, list)) and len(step) >= 1
+                ]
+                metrics.tools_count = len(metrics.tools_called)
 
             return parse_claim_assessment_output(
                 raw_output=raw_output,
                 claim_id=target_claim_id,
                 intermediate_steps=intermediate_steps,
+                metrics=metrics,
             )
         except Exception as exc:
             logger.error("Error during LLM agent execution for %s: %s. Falling back to deterministic engine.", target_claim_id, exc)
@@ -385,3 +445,4 @@ def evaluate_anonymized_claim(
         settings=settings,
         force_deterministic=force_deterministic,
     )
+

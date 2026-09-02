@@ -9,6 +9,8 @@ from src.core.models import (
     CoverageCheckResult,
     CoverageStatus,
     DamageSeverity,
+    ExecutionMetrics,
+    ToolCallTrace,
 )
 
 __all__ = [
@@ -21,4 +23,7 @@ __all__ = [
     "ClaimAssessment",
     "CoverageStatus",
     "DamageSeverity",
+    "ExecutionMetrics",
+    "ToolCallTrace",
 ]
+

@@ -153,9 +153,10 @@ gantt
 * **Para:** Garantizar que el sistema no es una "caja negra" y permite auditar cada decisión tomada.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Captura de los pasos intermedios (*Intermediate Steps*) del agente.
-- [ ] Registro de qué herramientas se llamaron y con qué parámetros exactos.
-- [ ] Métricas calculadas: tiempo de ejecución en segundos y tokens consumidos.
+- [x] Captura de los pasos intermedios (*Intermediate Steps*) del agente.
+- [x] Registro de qué herramientas se llamaron y con qué parámetros exactos.
+- [x] Métricas calculadas: tiempo de ejecución en segundos y tokens consumidos.
+
 
 ---
 

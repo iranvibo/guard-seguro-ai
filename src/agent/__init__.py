@@ -7,6 +7,14 @@ from src.agent.claim_agent import (
     evaluate_anonymized_claim,
     evaluate_claim,
 )
+from src.agent.observability import (
+    AgentAuditorCallbackHandler,
+    calculate_token_cost,
+    estimate_text_tokens,
+    export_audit_trail_dict,
+    format_audit_log_markdown,
+    format_reasoning_flow_mermaid,
+)
 from src.agent.parser import (
     extract_json_from_text,
     format_intermediate_steps,
@@ -30,4 +38,11 @@ __all__ = [
     "parse_claim_assessment_output",
     "format_intermediate_steps",
     "extract_json_from_text",
+    "AgentAuditorCallbackHandler",
+    "estimate_text_tokens",
+    "calculate_token_cost",
+    "format_audit_log_markdown",
+    "format_reasoning_flow_mermaid",
+    "export_audit_trail_dict",
 ]
+
