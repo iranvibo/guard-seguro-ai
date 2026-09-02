@@ -202,20 +202,25 @@ class TestEndToEndTraceabilityInEvaluation:
         )
 
         # 1. DoD: Captura de pasos intermedios (Intermediate Steps)
-        assert len(assessment.intermediate_steps) == 2
+        assert len(assessment.intermediate_steps) == 3
         step1 = assessment.intermediate_steps[0]
         step2 = assessment.intermediate_steps[1]
+        step3 = assessment.intermediate_steps[2]
 
         # 2. DoD: Registro de qué herramientas se llamaron y parámetros exactos
         assert step1["tool"] == "check_policy_coverage"
         assert "damage_type" in step1["tool_input"]
         assert step1["observation"]["cubierto"] is True
 
-        assert step2["tool"] == "calculate_repair_estimate"
-        assert "damaged_zone" in step2["tool_input"]
-        assert "severity" in step2["tool_input"]
-        assert "deductible" in step2["tool_input"]
-        assert step2["observation"]["total_a_pagar"] > 0
+        assert step2["tool"] == "assess_claim_risk_and_dispute"
+        assert "claim_text" in step2["tool_input"]
+        assert step2["observation"]["requiere_peritaje"] is False
+
+        assert step3["tool"] == "calculate_repair_estimate"
+        assert "damaged_zone" in step3["tool_input"]
+        assert "severity" in step3["tool_input"]
+        assert "deductible" in step3["tool_input"]
+        assert step3["observation"]["total_a_pagar"] > 0
 
         # 3. DoD: Métricas calculadas (tiempo en segundos y tokens consumidos)
         metrics = assessment.metrics
@@ -224,8 +229,9 @@ class TestEndToEndTraceabilityInEvaluation:
         assert metrics.completion_tokens > 0
         assert metrics.total_tokens == metrics.prompt_tokens + metrics.completion_tokens
         assert metrics.estimated_cost_usd >= 0.0
-        assert metrics.tools_count == 2
+        assert metrics.tools_count == 3
         assert "check_policy_coverage" in metrics.tools_called
+        assert "assess_claim_risk_and_dispute" in metrics.tools_called
         assert "calculate_repair_estimate" in metrics.tools_called
 
         # Alias property check

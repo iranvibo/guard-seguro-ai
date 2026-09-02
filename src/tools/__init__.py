@@ -12,6 +12,11 @@ from src.tools.repair_calculator import (
     normalize_severity,
 )
 
+from src.tools.risk_assessor import (
+    assess_claim_risk_and_dispute,
+    evaluate_claim_risk,
+)
+
 __all__ = [
     "check_policy_coverage",
     "verify_policy_coverage",
@@ -20,4 +25,7 @@ __all__ = [
     "compute_repair_estimate",
     "load_repair_rates",
     "normalize_severity",
+    "assess_claim_risk_and_dispute",
+    "evaluate_claim_risk",
 ]
+

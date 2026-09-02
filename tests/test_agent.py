@@ -205,9 +205,10 @@ class TestBuildClaimAgent:
         executor = build_claim_agent(settings=custom_settings)
 
         assert executor is not None
-        assert len(executor.tools) == 2
+        assert len(executor.tools) == 3
         tool_names = [t.name for t in executor.tools]
         assert "check_policy_coverage" in tool_names
+        assert "assess_claim_risk_and_dispute" in tool_names
         assert "calculate_repair_estimate" in tool_names
         assert executor.return_intermediate_steps is True
 
@@ -230,9 +231,25 @@ class TestClaimEvaluatorAgentDeterministic:
         assert assessment.deductible == 0.0
         assert assessment.net_payout > 0
         assert assessment.cost_breakdown is not None
-        assert len(assessment.intermediate_steps) >= 2
+        assert len(assessment.intermediate_steps) >= 3
         assert assessment.intermediate_steps[0]["tool"] == "check_policy_coverage"
-        assert assessment.intermediate_steps[1]["tool"] == "calculate_repair_estimate"
+        assert assessment.intermediate_steps[1]["tool"] == "assess_claim_risk_and_dispute"
+        assert assessment.intermediate_steps[2]["tool"] == "calculate_repair_estimate"
+
+    def test_evaluate_dispute_and_contradictory_claim_requires_expert(self, agent: ClaimEvaluatorAgent) -> None:
+        """Scenario: Collision with contradictory versions, complaints and structural damage -> Requires expert appraisal."""
+        claim_text = (
+            "Colisión múltiple con otros dos vehículos de terceros. Existen versiones contradictorias "
+            "sobre la prioridad de paso, posible exceso de velocidad y daños estructurales severos en el chasis y motor. "
+            "Los terceros implicados han presentado denuncia y no hay atestado policial concluyente."
+        )
+        assessment = agent.evaluate(claim=claim_text, claim_id="CLM-DISPUTE-01", force_deterministic=True)
+
+        assert assessment.status == CoverageStatus.REQUIRES_EXPERT
+        assert assessment.is_covered is True
+        assert "Requiere Peritaje" in assessment.status.value or assessment.status == CoverageStatus.REQUIRES_EXPERT
+        assert any("contradictorias" in r.lower() or "riesgo" in r.lower() or "peritaje" in r.lower() for r in [assessment.reasoning, assessment.recommendation])
+
 
     def test_evaluate_hail_damage_claim_approved(self, agent: ClaimEvaluatorAgent) -> None:
         """Scenario 2: Atmospheric phenomena (severe hail) -> Approved."""

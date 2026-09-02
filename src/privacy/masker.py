@@ -13,6 +13,7 @@ from src.core.models import AnonymizedClaim, ClaimInput
 from src.privacy.patterns import (
     COMMON_SPANISH_FIRST_NAMES,
     COMMON_SPANISH_SURNAMES,
+    PATTERN_CONTEXTUAL_ADDRESS,
     PATTERN_CONTEXTUAL_NAME,
     PATTERN_DIRECCION,
     PATTERN_DNI_NIE,
@@ -127,6 +128,18 @@ class PIIMasker:
                     _EntitySpan(
                         start=match.start(),
                         end=match.start() + len(addr_text),
+                        entity_type="DIRECCION",
+                        text=addr_text,
+                    )
+                )
+            for match in PATTERN_CONTEXTUAL_ADDRESS.finditer(text):
+                addr_text = match.group(1).strip()
+                addr_start = match.start(1)
+                addr_end = addr_start + len(addr_text)
+                spans.append(
+                    _EntitySpan(
+                        start=addr_start,
+                        end=addr_end,
                         entity_type="DIRECCION",
                         text=addr_text,
                     )

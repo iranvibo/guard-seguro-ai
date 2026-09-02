@@ -220,6 +220,30 @@ class TestRealisticInsuranceClaimsDoD:
 
         assert unmask_pii(masked, mapping) == claim_text
 
+    def test_claim_6_castellana_address_with_clause(self) -> None:
+        """Caso 6: Dirección en Paseo de la Castellana seguida de cláusula subordinada."""
+        claim_text = (
+            "El conductor Antonio Romero Sanz (DNI 12345678Z, móvil 654987321) con domicilio en "
+            "Paseo de la Castellana 200, Madrid, conducía el vehículo 1234-BBB cuando se vio involucrado "
+            "en una colisión múltiple."
+        )
+        masked, mapping = mask_pii(claim_text)
+
+        assert "Antonio Romero Sanz" not in masked
+        assert "12345678Z" not in masked
+        assert "654987321" not in masked
+        assert "Paseo de la Castellana 200, Madrid" not in masked
+        assert "1234-BBB" not in masked
+
+        assert "[PERSONA_1]" in masked
+        assert "[DNI_1]" in masked
+        assert "[TELEFONO_1]" in masked
+        assert "[DIRECCION_1]" in masked
+        assert "[MATRICULA_1]" in masked
+
+        assert unmask_pii(masked, mapping) == claim_text
+
+
 
 class TestAnonymizeClaimIntegration:
     """Test integration between PIIMasker and Pydantic domain models."""

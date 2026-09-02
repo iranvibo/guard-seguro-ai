@@ -32,13 +32,16 @@ from src.core.models import (
 )
 from src.tools.policy_coverage import check_policy_coverage, verify_policy_coverage
 from src.tools.repair_calculator import calculate_repair_estimate, compute_repair_estimate
+from src.tools.risk_assessor import assess_claim_risk_and_dispute, evaluate_claim_risk
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_AGENT_TOOLS: List[BaseTool] = [
     check_policy_coverage,
+    assess_claim_risk_and_dispute,
     calculate_repair_estimate,
 ]
+
 
 
 def build_claim_agent(
@@ -178,14 +181,30 @@ class ClaimEvaluatorAgent:
             )
         ]
 
-        # 2. Step 2: Repair Calculation (if covered)
+        # 2. Step 2: Risk and Dispute Assessment (if covered)
         cost_breakdown = None
         if cov_res.is_covered:
+            tools_called.append("assess_claim_risk_and_dispute")
+            risk_eval = evaluate_claim_risk(claim_text)
+            risk_tool_output = risk_eval.to_dict()
+
+            intermediate_steps.append(
+                (
+                    type("AgentActionMock", (), {
+                        "tool": "assess_claim_risk_and_dispute",
+                        "tool_input": {"claim_text": claim_text[:80]},
+                        "log": f"Invoking assess_claim_risk_and_dispute for risk screening...",
+                    })(),
+                    json.dumps(risk_tool_output, ensure_ascii=False),
+                )
+            )
+
+            # 3. Step 3: Repair Calculation
             tools_called.append("calculate_repair_estimate")
             # Estimate severity from text
             severity = DamageSeverity.LIGHT
             lower_text = claim_text.lower()
-            if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto"]):
+            if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto", "chasis"]):
                 severity = DamageSeverity.SEVERE
             elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
                 severity = DamageSeverity.MODERATE
@@ -225,16 +244,26 @@ class ClaimEvaluatorAgent:
                 )
             )
 
-            status = CoverageStatus.APPROVED
-            summary = f"Siniestro cubierto bajo garantía de '{cov_res.coverage_type}'."
-            reasoning = (
-                f"El incidente reportado corresponde a la cobertura '{cov_res.coverage_type}'. "
-                f"Condiciones: {cov_res.conditions}. "
-                f"Se ha calculado el coste técnico de reparación para {meta['zone_name']} (Gravedad: {meta['severity']}): "
-                f"Materiales ({breakdown.materials:.2f} €) + Mano de Obra ({breakdown.labor:.2f} €) = {breakdown.gross_total:.2f} €. "
-                f"Aplicando franquicia de {breakdown.deductible:.2f} €, el total indemnizable es {breakdown.net_total:.2f} €."
-            )
-            recommendation = "Proceder a la emisión de la orden de reparación o indemnización tras visto bueno del gestor."
+            if risk_eval.requires_expert_appraisal:
+                status = CoverageStatus.REQUIRES_EXPERT
+                summary = f"Siniestro cubierto en póliza pero requiere peritaje presencial por factores de controversia/riesgo ({risk_eval.risk_level})."
+                reasoning = (
+                    f"El siniestro encaja en la cobertura '{cov_res.coverage_type}'. No obstante, se han detectado alertas de riesgo: "
+                    f"{'; '.join(risk_eval.alerts)}. Por gobernanza, control de fraude y seguridad jurídica, se suspende la liquidación "
+                    f"automática hasta que un perito presencial o tramitador humano dictamine la culpabilidad."
+                )
+                recommendation = risk_eval.recommendation
+            else:
+                status = CoverageStatus.APPROVED
+                summary = f"Siniestro cubierto bajo garantía de '{cov_res.coverage_type}'."
+                reasoning = (
+                    f"El incidente reportado corresponde a la cobertura '{cov_res.coverage_type}'. "
+                    f"Condiciones: {cov_res.conditions}. "
+                    f"Se ha calculado el coste técnico de reparación para {meta['zone_name']} (Gravedad: {meta['severity']}): "
+                    f"Materiales ({breakdown.materials:.2f} €) + Mano de Obra ({breakdown.labor:.2f} €) = {breakdown.gross_total:.2f} €. "
+                    f"Aplicando franquicia de {breakdown.deductible:.2f} €, el total indemnizable es {breakdown.net_total:.2f} €."
+                )
+                recommendation = "Proceder a la emisión de la orden de reparación o indemnización tras visto bueno del gestor."
         elif "requiere peritaje" in cov_res.coverage_type.lower() or "no catalogado" in cov_res.coverage_type.lower():
             status = CoverageStatus.REQUIRES_EXPERT
             summary = "Siniestro de tipología compleja o no tipificada. Requiere valoración pericial."

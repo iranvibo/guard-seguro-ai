@@ -79,15 +79,26 @@ PATTERN_IBAN = re.compile(
 )
 
 # Spanish Postal Addresses (Direcciones)
-# e.g., Calle Alcalá 45, Madrid; Avda. Diagonal 450, Barcelona; Calle Gran Vía 28, Madrid
+# e.g., Calle Alcalá 45, Madrid; Avda. Diagonal 450, Barcelona; Calle Gran Vía 28, Madrid; Paseo de la Castellana 200, Madrid
 PATTERN_DIRECCION = re.compile(
-    r"\b(?:Calle|C\/|Avda\.?|Avenida|Paseo|Plaza|Camino|Carretera|Ctra\.?|Ronda|Travesía|Trav\.?|Gran Vía)"
-    r"\s+[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\sºª\.\-]+?"
-    r"(?:,\s*(?:nº|n[ºo]|número|\d+)[A-Za-z0-9\sºª\.\-]*)?"
-    r"(?:,\s*(?:\d{5}\s*)?[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?"
-    r"(?=[;\.\n]|\s+con\b|\s+solicita\b|\s+declara\b|\s+tras\b|\s+Se\b|$)",
+    r"\b(?:Calle|C\/|Avda\.?|Avenida|Paseo|Plaza|Camino|Carretera|Ctra\.?|Ronda|Travesía|Trav\.?|Gran Vía|Bulevar|Polígono|Urb\.?|Urbanización)"
+    r"\s+(?:de\s+la\s+|de\s+|del\s+)?[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\sºª\-]+?"
+    r"(?:,\s*(?:nº|n[ºo]|número|\d+)[A-Za-z0-9\sºª\-]*)?"
+    r"(?:(?:,\s*|\s+de\s+)(?:\d{5}\s*)?[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?"
+    r"(?=[,;\.\n\(\)]|\s+con\b|\s+conducía\b|\s+solicita\b|\s+declara\b|\s+tras\b|\s+cuando\b|\s+quien\b|\s+donde\b|\s+Se\b|$)",
     re.UNICODE
 )
+
+# Contextual Address Detection
+# Matches: "con domicilio en Paseo de la Castellana 200, Madrid", "sito en Calle Mayor 10", "residente en Avda. Diagonal 450, Barcelona"
+PATTERN_CONTEXTUAL_ADDRESS = re.compile(
+    r"\b(?:domicilio(?:\s+en|\s+sito\s+en)?|dirección(?:\s+en)?|sito\s+en|sita\s+en|residente\s+en|residencia\s+en|inmueble\s+sito\s+en|vivienda\s+sita\s+en|ubicado\s+en|ubicada\s+en)[:\s]+"
+    r"((?:Calle|C\/|Avda\.?|Avenida|Paseo|Plaza|Camino|Carretera|Ctra\.?|Ronda|Travesía|Trav\.?|Gran Vía|Bulevar|Polígono|Urb\.?|Urbanización)\s+[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\sºª\-]+?(?:(?:,\s*|\s+de\s+)(?:\d{5}\s*)?[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?)"
+    r"(?=[,;\.\n\(\)]|\s+conducía\b|\s+cuando\b|\s+solicita\b|\s+declara\b|\s+tras\b|$)",
+    re.UNICODE | re.IGNORECASE,
+)
+
+
 
 # Contextual Prefix Name Detection
 # Matches: "El cliente Juan Pérez", "tomador: Carlos Gómez", "conductora María Rodríguez López"
