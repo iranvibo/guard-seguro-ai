@@ -1,0 +1,33 @@
+# ==============================================================================
+# GuardSeguro AI — Docker Compose Orchestration
+# ==============================================================================
+services:
+  guardseguro-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: guardseguro-ai-app
+    restart: unless-stopped
+    ports:
+      - "${STREAMLIT_SERVER_PORT:-8501}:8501"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-gpt-4o-mini}
+      - OPENAI_TEMPERATURE=${OPENAI_TEMPERATURE:-0.0}
+      - APP_NAME=${APP_NAME:-GuardSeguro AI}
+      - APP_ENV=${APP_ENV:-development}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
+    volumes:
+      - ./src:/app/src:ro
+      - ./app.py:/app/app.py:ro
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s

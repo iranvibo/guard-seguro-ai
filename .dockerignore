@@ -1,0 +1,40 @@
+# Version Control
+.git/
+.gitignore
+
+# Environment & Secrets (NEVER bake into image)
+.env
+.env.*
+*.pem
+*.key
+
+# Virtual Environments
+.venv/
+venv/
+env/
+
+# Python cache & build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+
+# Tests & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# IDE & OS specific
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Documentation & Memory (not needed in runtime container)
+memory/
+*.md

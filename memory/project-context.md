@@ -41,3 +41,9 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
 - **Modelos (LLM)**: OpenAI API (`gpt-4o-mini`) o Hugging Face API.
 - **Contenerización y Entorno**: Docker (`Dockerfile` optimizado y seguro) y `docker-compose.yml` para reproducibilidad y aislamiento.
 - **Despliegue y LLMOps**: Streamlit Community Cloud / Hugging Face Spaces / Contenedores Cloud con variables de entorno protegidas (`.env` / secrets) y control de versiones en GitHub.
+
+---
+
+## 3. Estado de Implementación
+- **US-01 (Cimientos & Docker)**: ✅ Completada. Estructura modular `src/` (`core`, `privacy`, `tools`, `agent`, `compliance`), `Dockerfile` no-root con Python 3.11-slim, `docker-compose.yml`, `requirements.txt`, `.env.example`, `.dockerignore`, `.gitignore` y `src/core/config.py` con validación de entorno.
+

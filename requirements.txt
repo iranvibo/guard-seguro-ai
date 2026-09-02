@@ -1,0 +1,15 @@
+# Core Framework & UI
+streamlit>=1.38.0,<2.0.0
+
+# LLM & Agent Framework
+langchain>=0.2.14,<0.4.0
+langchain-core>=0.2.35,<0.4.0
+langchain-openai>=0.1.22,<0.3.0
+
+# Data Validation & Settings
+pydantic>=2.8.2,<3.0.0
+pydantic-settings>=2.4.0,<3.0.0
+python-dotenv>=1.0.1,<2.0.0
+
+# Testing & Quality Assurance
+pytest>=8.3.2,<9.0.0

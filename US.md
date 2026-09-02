@@ -45,7 +45,7 @@ gantt
 * **Para:** Garantizar un desarrollo modular, reproducible, aislado mediante contenedores Docker y que ninguna clave de API quede expuesta en el control de versiones.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Estructura de directorios creada:
+- [x] Estructura de directorios creada:
   ```text
   guardseguro-ai/
   ├── src/
@@ -62,11 +62,11 @@ gantt
   ├── .env.example
   └── .gitignore
   ```
-- [ ] Archivo `.gitignore` configurado para ignorar `.env`, `__pycache__` y entornos virtuales.
-- [ ] Archivo `.dockerignore` configurado para excluir `.git`, `.venv`, `__pycache__`, `.env` y archivos temporales del build.
-- [ ] Archivo `Dockerfile` funcional y optimizado para la ejecución de Streamlit (puerto `8501`, healthcheck, buenas prácticas de capas y seguridad).
-- [ ] Archivo `docker-compose.yml` que permita levantar el servicio con `docker compose up` mapeando puertos y variables de entorno desde `.env`.
-- [ ] `requirements.txt` con versiones bloqueadas (`streamlit`, `langchain`, `langchain-openai`, `python-dotenv`, `pydantic`).
+- [x] Archivo `.gitignore` configurado para ignorar `.env`, `__pycache__` y entornos virtuales.
+- [x] Archivo `.dockerignore` configurado para excluir `.git`, `.venv`, `__pycache__`, `.env` y archivos temporales del build.
+- [x] Archivo `Dockerfile` funcional y optimizado para la ejecución de Streamlit (puerto `8501`, healthcheck, buenas prácticas de capas y seguridad).
+- [x] Archivo `docker-compose.yml` que permita levantar el servicio con `docker compose up` mapeando puertos y variables de entorno desde `.env`.
+- [x] `requirements.txt` con versiones bloqueadas (`streamlit`, `langchain`, `langchain-openai`, `python-dotenv`, `pydantic`).
 
 ---
 
