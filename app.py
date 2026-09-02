@@ -16,6 +16,7 @@ from src.ui.components import (
     apply_custom_styles,
     render_header,
     render_privacy_panel,
+    render_report_header_with_copy_button,
     render_resolution_panel,
     render_sidebar,
     render_traceability_and_compliance_panel,
@@ -171,6 +172,15 @@ def main() -> None:
         assessment_res = res["assessment"]
         comp_rep = res["compliance_report"]
 
+        st.markdown("---")
+
+        # Top of Report Panel: Title & Copy inform in JSON button
+        render_report_header_with_copy_button(
+            claim_input=claim_in,
+            anonymized_claim=anon_claim,
+            assessment=assessment_res,
+            compliance_report=comp_rep,
+        )
         st.markdown("---")
 
         # 3 Panels

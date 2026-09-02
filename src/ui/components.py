@@ -4,8 +4,11 @@ Implements responsive, high-aesthetic UI cards, metric banners, PII diff view,
 financial resolution cards, intermediate reasoning steps, and EU AI Act compliance tables.
 """
 
+import html
+import json
 from typing import Any, Dict, Optional
 import streamlit as st
+import streamlit.components.v1 as components
 
 from src.agent.observability import format_reasoning_flow_mermaid
 from src.compliance.models import ComplianceCheckStatus, EUAIActComplianceReport
@@ -246,6 +249,266 @@ def render_sidebar(settings: Settings) -> Dict[str, Any]:
         st.caption("GuardSeguro AI · Allianz Spain CoE Automation & AI")
 
     return {"force_deterministic": force_deterministic}
+
+
+def build_claim_report_json(
+    claim_input: ClaimInput,
+    anonymized_claim: Optional[AnonymizedClaim],
+    assessment: ClaimAssessment,
+    compliance_report: Optional[EUAIActComplianceReport] = None,
+) -> Dict[str, Any]:
+    """Construct structured, auditable JSON representation of the entire claim evaluation.
+
+    Contains:
+    - tipo_poliza & id_siniestro
+    - descripcion (original & anonimizada con recuento PII)
+    - caso_cobertura (estado, resolución, franquicia, desglose de costes, recomendación)
+    - comportamiento_agente (herramientas usadas, métricas, qué envió y qué recibió en cada paso, razonamiento)
+    - auditoria_eu_ai_act (clasificación de riesgo y certificación si aplica)
+    """
+    # 1. Format intermediate steps (qué envió, qué recibió, qué pensó el agente)
+    formatted_steps = []
+    for i, step in enumerate(assessment.intermediate_steps or [], start=1):
+        if isinstance(step, dict):
+            tool_name = step.get("tool", f"tool_{i}")
+            tool_input = step.get("tool_input", {})
+            obs = step.get("observation", {})
+            thought = step.get("thought") or step.get("log", "")
+        elif isinstance(step, (tuple, list)) and len(step) >= 2:
+            action, obs = step[0], step[1]
+            tool_name = getattr(action, "tool", f"tool_{i}")
+            tool_input = getattr(action, "tool_input", {})
+            thought = getattr(action, "log", "")
+            if isinstance(obs, str):
+                try:
+                    obs = json.loads(obs)
+                except Exception:
+                    pass
+        else:
+            tool_name = getattr(step, "tool", f"tool_{i}")
+            tool_input = getattr(step, "tool_input", {})
+            obs = getattr(step, "observation", {})
+            thought = getattr(step, "thought", "")
+
+        formatted_steps.append({
+            "paso": i,
+            "herramienta": tool_name,
+            "pensamiento": thought,
+            "enviado": tool_input,
+            "recibido": obs,
+        })
+
+    # 2. Coverage case resolution
+    cost_breakdown_dict = None
+    if assessment.cost_breakdown:
+        cost_breakdown_dict = {
+            "materiales": assessment.cost_breakdown.materials,
+            "mano_de_obra": assessment.cost_breakdown.labor,
+            "coste_bruto": assessment.cost_breakdown.gross_total,
+            "franquicia": assessment.cost_breakdown.deductible,
+            "total_neto": assessment.cost_breakdown.net_total,
+        }
+
+    status_val = (
+        assessment.status.value
+        if hasattr(assessment.status, "value")
+        else str(assessment.status)
+    )
+
+    caso_cobertura = {
+        "estado_dictamen": status_val,
+        "tiene_cobertura": assessment.is_covered,
+        "resumen_cobertura": assessment.coverage_summary,
+        "franquicia_aplicable_eur": assessment.deductible,
+        "total_a_indemnizar_eur": assessment.net_payout,
+        "desglose_costes": cost_breakdown_dict,
+        "recomendacion": assessment.recommendation,
+        "fundamentacion_razonamiento": assessment.reasoning,
+    }
+
+    # 3. Agent behavior & execution tracing
+    tools_called = (
+        assessment.metrics.tools_called
+        if assessment.metrics and assessment.metrics.tools_called
+        else [step["herramienta"] for step in formatted_steps]
+    )
+
+    comportamiento_agente = {
+        "modelo_llm": assessment.metrics.model_name if assessment.metrics else "gpt-4o-mini",
+        "tiempo_ejecucion_segundos": assessment.metrics.execution_time_seconds if assessment.metrics else 0.0,
+        "total_tokens": assessment.metrics.total_tokens if assessment.metrics else 0,
+        "coste_estimado_usd": assessment.metrics.estimated_cost_usd if assessment.metrics else 0.0,
+        "total_herramientas_invocadas": len(tools_called),
+        "herramientas_utilizadas": tools_called,
+        "pasos_intermedios": formatted_steps,
+        "razonamiento_final": assessment.reasoning,
+    }
+
+    report_dict: Dict[str, Any] = {
+        "id_siniestro": claim_input.claim_id,
+        "tipo_poliza": claim_input.policy_type,
+        "descripcion": {
+            "texto_original": claim_input.raw_text,
+            "texto_anonimizado": (
+                anonymized_claim.anonymized_text
+                if anonymized_claim
+                else claim_input.raw_text
+            ),
+            "entidades_pii_detectadas": (
+                anonymized_claim.detected_entities_count if anonymized_claim else 0
+            ),
+        },
+        "caso_cobertura": caso_cobertura,
+        "comportamiento_agente": comportamiento_agente,
+    }
+
+    if compliance_report:
+        report_dict["auditoria_eu_ai_act"] = {
+            "clasificacion_riesgo": compliance_report.risk_classification.category.value,
+            "supervision_humana_art_14": compliance_report.human_in_the_loop.human_validation_required,
+            "certificacion_cumplimiento": compliance_report.is_certified,
+            "score_cumplimiento_pct": compliance_report.compliance_score,
+        }
+
+    return report_dict
+
+
+def render_report_header_with_copy_button(
+    claim_input: ClaimInput,
+    anonymized_claim: Optional[AnonymizedClaim],
+    assessment: ClaimAssessment,
+    compliance_report: Optional[EUAIActComplianceReport] = None,
+) -> None:
+    """Render the top header of the assessment report panel with the 'copy inform in json' button."""
+    report_dict = build_claim_report_json(
+        claim_input=claim_input,
+        anonymized_claim=anonymized_claim,
+        assessment=assessment,
+        compliance_report=compliance_report,
+    )
+    report_json_str = json.dumps(report_dict, indent=2, ensure_ascii=False)
+
+    col_title, col_btn = st.columns([3, 2])
+    with col_title:
+        st.markdown(
+            f"""
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.2rem;">
+                <h2 style="margin: 0; padding: 0; color: #003781; font-weight: 800; font-size: 1.55rem;">
+                    📊 Informe Técnico de Evaluación
+                </h2>
+                <span class="badge-pill" style="background: #003781; color: #fff; font-size: 0.8rem; border-radius: 12px; padding: 2px 10px;">
+                    {claim_input.claim_id}
+                </span>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    with col_btn:
+        json_escaped = html.escape(report_json_str)
+        button_html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body {{
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    height: 42px;
+                    background: transparent;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                }}
+                .copy-btn {{
+                    background: linear-gradient(135deg, #003781 0%, #005A9C 100%);
+                    color: #FFFFFF;
+                    border: 1px solid rgba(0, 163, 224, 0.6);
+                    border-radius: 8px;
+                    padding: 8px 16px;
+                    font-size: 13.5px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    box-shadow: 0 2px 6px rgba(0, 55, 129, 0.25);
+                    transition: all 0.2s ease-in-out;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 8px;
+                    user-select: none;
+                }}
+                .copy-btn:hover {{
+                    background: linear-gradient(135deg, #004baf 0%, #007AB3 100%);
+                    box-shadow: 0 4px 10px rgba(0, 55, 129, 0.35);
+                    transform: translateY(-1px);
+                }}
+                .copy-btn:active {{
+                    transform: translateY(0);
+                }}
+            </style>
+        </head>
+        <body>
+            <button id="copy-json-btn" class="copy-btn" onclick="copyReportJson()">
+                <span id="btn-icon">📋</span>
+                <span id="btn-text">copy inform in json</span>
+            </button>
+            <textarea id="json-source-data" style="display: none;">{json_escaped}</textarea>
+
+            <script>
+            function copyReportJson() {{
+                const rawJson = document.getElementById("json-source-data").value;
+                const btn = document.getElementById("copy-json-btn");
+                const btnText = document.getElementById("btn-text");
+                const btnIcon = document.getElementById("btn-icon");
+
+                function showSuccess() {{
+                    btn.style.background = "linear-gradient(135deg, #059669 0%, #10B981 100%)";
+                    btn.style.borderColor = "#34D399";
+                    btnIcon.textContent = "✅";
+                    btnText.textContent = "¡JSON copiado!";
+                    setTimeout(() => {{
+                        btn.style.background = "linear-gradient(135deg, #003781 0%, #005A9C 100%)";
+                        btn.style.borderColor = "rgba(0, 163, 224, 0.6)";
+                        btnIcon.textContent = "📋";
+                        btnText.textContent = "copy inform in json";
+                    }}, 2500);
+                }}
+
+                function fallbackCopy(text) {{
+                    const tempTextArea = document.createElement("textarea");
+                    tempTextArea.value = text;
+                    tempTextArea.style.position = "fixed";
+                    tempTextArea.style.top = "0";
+                    tempTextArea.style.left = "0";
+                    tempTextArea.style.opacity = "0";
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.focus();
+                    tempTextArea.select();
+                    try {{
+                        const successful = document.execCommand('copy');
+                        if (successful) {{
+                            showSuccess();
+                        }} else {{
+                            alert("No se pudo copiar automáticamente al portapapeles.");
+                        }}
+                    }} catch (err) {{
+                        console.error("Fallback copy error:", err);
+                    }}
+                    document.body.removeChild(tempTextArea);
+                }}
+
+                if (navigator.clipboard && navigator.clipboard.writeText) {{
+                    navigator.clipboard.writeText(rawJson)
+                        .then(showSuccess)
+                        .catch(err => fallbackCopy(rawJson));
+                }} else {{
+                    fallbackCopy(rawJson);
+                }}
+            }}
+            </script>
+        </body>
+        </html>
+        """
+        components.html(button_html, height=45)
 
 
 def render_privacy_panel(claim_input: ClaimInput, anonymized_claim: AnonymizedClaim) -> None:
