@@ -39,4 +39,5 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
 - **UI / Frontend**: Streamlit.
 - **Agentes**: LangChain o smolagents.
 - **Modelos (LLM)**: OpenAI API (`gpt-4o-mini`) o Hugging Face API.
-- **Despliegue y LLMOps**: Streamlit Community Cloud / Hugging Face Spaces con variables de entorno protegidas (`.env` / secrets) y control de versiones en GitHub.
+- **Contenerización y Entorno**: Docker (`Dockerfile` optimizado y seguro) y `docker-compose.yml` para reproducibilidad y aislamiento.
+- **Despliegue y LLMOps**: Streamlit Community Cloud / Hugging Face Spaces / Contenedores Cloud con variables de entorno protegidas (`.env` / secrets) y control de versiones en GitHub.

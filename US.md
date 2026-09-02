@@ -15,7 +15,7 @@ gantt
     dateFormat  X
     axisFormat %d
     section Épica 0: Cimientos
-    US-01: Configuración de Entorno & Seguridad :0, 1
+    US-01: Configuración de Entorno, Docker & Seguridad :0, 1
     US-02: Modelos de Datos & Estructuras Base   :1, 2
     section Épica 1: IA Responsable
     US-03: Módulo de Enmascaramiento PII         :2, 4
@@ -29,20 +29,20 @@ gantt
     US-08: Ficha de Cumplimiento EU AI Act       :8, 10
     section Épica 5: UI y Producción
     US-09: Dashboard Web en Streamlit           :9, 11
-    US-10: Despliegue Cloud & LLMOps             :10, 12
+    US-10: Contenerización Docker, Despliegue Cloud & LLMOps :10, 12
 ```
 
 ---
 
 ## 🏛️ ÉPICA 0: Cimientos del Proyecto y Arquitectura Base
-*Objetivo: Disponer de una base de código limpia, modular, segura y con las dependencias necesarias antes de escribir lógica de negocio.*
+*Objetivo: Disponer de una base de código limpia, modular, segura, contenerizada con Docker y con las dependencias necesarias antes de escribir lógica de negocio.*
 
 ---
 
-### **US-01: Inicialización del Entorno, Dependencias y Gestión de Secretos**
-* **Como:** Ingeniero de Software de Allianz.
-* **Quiero:** Configurar la estructura de carpetas del proyecto, entorno virtual de Python, `requirements.txt` y gestión segura de variables de entorno (`.env`).
-* **Para:** Garantizar un desarrollo modular, reproducible y que ninguna clave de API quede expuesta en el control de versiones.
+### **US-01: Inicialización del Entorno, Dockerización y Gestión de Secretos**
+* **Como:** Ingeniero de Software / DevOps de Allianz.
+* **Quiero:** Configurar la estructura de carpetas del proyecto, entorno virtual de Python, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `requirements.txt` y gestión segura de variables de entorno (`.env`).
+* **Para:** Garantizar un desarrollo modular, reproducible, aislado mediante contenedores Docker y que ninguna clave de API quede expuesta en el control de versiones.
 
 #### Criterios de Aceptación (DoD):
 - [ ] Estructura de directorios creada:
@@ -55,11 +55,17 @@ gantt
   │   ├── agent/        # Orquestación del LLM
   │   └── compliance/   # Normativa EU AI Act
   ├── app.py            # Entrypoint de Streamlit
+  ├── Dockerfile        # Imagen Docker optimizada (python:3.11-slim, usuario no-root)
+  ├── docker-compose.yml # Orquestación local y binding de variables
+  ├── .dockerignore     # Exclusión de archivos innecesarios del contexto Docker
   ├── requirements.txt
   ├── .env.example
   └── .gitignore
   ```
 - [ ] Archivo `.gitignore` configurado para ignorar `.env`, `__pycache__` y entornos virtuales.
+- [ ] Archivo `.dockerignore` configurado para excluir `.git`, `.venv`, `__pycache__`, `.env` y archivos temporales del build.
+- [ ] Archivo `Dockerfile` funcional y optimizado para la ejecución de Streamlit (puerto `8501`, healthcheck, buenas prácticas de capas y seguridad).
+- [ ] Archivo `docker-compose.yml` que permita levantar el servicio con `docker compose up` mapeando puertos y variables de entorno desde `.env`.
 - [ ] `requirements.txt` con versiones bloqueadas (`streamlit`, `langchain`, `langchain-openai`, `python-dotenv`, `pydantic`).
 
 ---
@@ -173,7 +179,7 @@ gantt
 ---
 
 ## 🖥️ ÉPICA 5: Experiencia de Usuario y Despliegue (UI & LLMOps)
-*Objetivo: Empaquetar todo en una aplicación web interactiva y publicarla en la nube.*
+*Objetivo: Empaquetar todo en una aplicación web interactiva, contenerizada en Docker y publicarla en la nube.*
 
 ---
 
@@ -191,15 +197,16 @@ gantt
 
 ---
 
-### **US-10: Despliegue en la Nube y Documentación de Producción**
-* **Como:** Reclutador / Responsable del CoE de Allianz.
-* **Quiero:** Acceder a la aplicación desplegada públicamente (URL en vivo) y revisar el repositorio en GitHub con un `README.md` profesional.
-* **Para:** Validar la capacidad de despliegue en producción y buenas prácticas de ingeniería de software.
+### **US-10: Contenerización Docker, Despliegue Cloud & LLMOps**
+* **Como:** Reclutador / Responsable del CoE de Allianz / Ingeniero de Operaciones.
+* **Quiero:** Ejecutar la aplicación en contenedores Docker (localmente con `docker compose up` o en la nube) y acceder a la aplicación desplegada con un `README.md` profesional.
+* **Para:** Validar la capacidad de despliegue en producción, reproducibilidad del entorno, portabilidad y buenas prácticas de ingeniería de software y LLMOps.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Aplicación desplegada en Streamlit Community Cloud o Hugging Face Spaces.
-- [ ] Secretos (`OPENAI_API_KEY`) configurados de forma segura en la consola de la nube (sin hardcodear en el repositorio).
-- [ ] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de instalación local y Justificación técnica para Allianz.
+- [ ] Imagen Docker testeada y ejecutable localmente mediante `docker compose up --build`.
+- [ ] Aplicación desplegada en Streamlit Community Cloud, Hugging Face Spaces o plataforma basada en contenedores.
+- [ ] Secretos (`OPENAI_API_KEY`) gestionados de forma segura mediante inyección en `.env` / consola de la nube (sin hardcodear en el repositorio ni en la imagen Docker).
+- [ ] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de despliegue y ejecución con Docker, Guía de ejecución manual en Python y Justificación técnica para Allianz.
 
 ---
 
@@ -207,9 +214,9 @@ gantt
 
 | Épica | User Stories | Dependencias Previas | Complejidad Estimada |
 |---|---|---|---|
-| **0. Cimientos** | US-01, US-02 | Ninguna | 🟢 Baja (1-2 h) |
+| **0. Cimientos** | US-01 (Docker + Config), US-02 | Ninguna | 🟢 Baja (1-2 h) |
 | **1. IA Responsable** | US-03 | US-01, US-02 | 🟡 Media (2-3 h) |
 | **2. Herramientas** | US-04, US-05 | US-01, US-02 | 🟢 Baja (1-2 h) |
 | **3. Agente GenAI** | US-06, US-07 | US-03, US-04, US-05 | 🟡 Media (3-4 h) |
 | **4. Cumplimiento** | US-08 | US-06, US-07 | 🟢 Baja (1 h) |
-| **5. UI & Cloud** | US-09, US-10 | US-06, US-08 | 🟢 Baja (2 h) |
+| **5. UI & Cloud** | US-09, US-10 (Docker + Cloud) | US-06, US-08 | 🟢 Baja (2 h) |
