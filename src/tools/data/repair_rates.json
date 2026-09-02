@@ -1,0 +1,319 @@
+{
+  "currency": "EUR",
+  "version": "2026.1",
+  "standard_labor_rate_hourly": 55.0,
+  "zones": {
+    "chapa": {
+      "name": "Chapa / Carrocería",
+      "aliases": [
+        "chapa",
+        "carroceria",
+        "chapa y pintura",
+        "aleta",
+        "capo",
+        "techo",
+        "puerta",
+        "panel",
+        "abolladura",
+        "bollo",
+        "golpe chapa"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 45.0,
+          "labor": 110.0,
+          "estimated_hours": 2.0,
+          "description": "Desabollado leve sin estiramiento de chapa y ajuste de paneles menores."
+        },
+        "Moderado": {
+          "materials": 160.0,
+          "labor": 275.0,
+          "estimated_hours": 5.0,
+          "description": "Reparación de deformación media en chapa, conformado y alineación de nervios."
+        },
+        "Grave": {
+          "materials": 480.0,
+          "labor": 550.0,
+          "estimated_hours": 10.0,
+          "description": "Sustitución de pieza de chapa estructural, soldadura y enderezado en bancada."
+        }
+      }
+    },
+    "pintura": {
+      "name": "Pintura y Acabado",
+      "aliases": [
+        "pintura",
+        "rayón",
+        "rayon",
+        "arañazo",
+        "aranazo",
+        "raspon",
+        "raspón",
+        "vandalismo pintura",
+        "repintado"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 60.0,
+          "labor": 82.5,
+          "estimated_hours": 1.5,
+          "description": "Pulido y pintado de pieza individual o difuminado de rayón superficial."
+        },
+        "Moderado": {
+          "materials": 150.0,
+          "labor": 220.0,
+          "estimated_hours": 4.0,
+          "description": "Lijado profundo, aparejo bicapa y pintura completa de 2 piezas adyacentes."
+        },
+        "Grave": {
+          "materials": 350.0,
+          "labor": 440.0,
+          "estimated_hours": 8.0,
+          "description": "Pintura tricapa/metalizada integral de múltiples piezas o lateral completo."
+        }
+      }
+    },
+    "luna_delantera": {
+      "name": "Luna Delantera / Parabrisas",
+      "aliases": [
+        "luna delantera",
+        "parabrisas",
+        "luna",
+        "lunas",
+        "cristal delantero",
+        "parabrisas delantero",
+        "luneta",
+        "luneta trasera",
+        "ventanilla",
+        "cristal"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 30.0,
+          "labor": 60.0,
+          "estimated_hours": 1.0,
+          "description": "Reparación de impacto tipo 'ojo de buey' mediante inyección de resina ultravioleta."
+        },
+        "Moderado": {
+          "materials": 240.0,
+          "labor": 110.0,
+          "estimated_hours": 2.0,
+          "description": "Sustitución de luna o ventanilla lateral estándar con sellado y molduras."
+        },
+        "Grave": {
+          "materials": 420.0,
+          "labor": 165.0,
+          "estimated_hours": 3.0,
+          "description": "Sustitución de parabrisas térmico acústico con calibración de cámaras ADAS."
+        }
+      }
+    },
+    "parachoques": {
+      "name": "Parachoques / Paragolpes",
+      "aliases": [
+        "parachoques",
+        "paragolpes",
+        "paragolpe",
+        "parachoques delantero",
+        "parachoques trasero",
+        "defensa",
+        "faldón",
+        "faldon",
+        "spoiler"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 50.0,
+          "labor": 90.0,
+          "estimated_hours": 1.5,
+          "description": "Desmontaje, grapado de fijaciones y reparación plástica superficial del paragolpes."
+        },
+        "Moderado": {
+          "materials": 220.0,
+          "labor": 180.0,
+          "estimated_hours": 3.0,
+          "description": "Reparación de rotura de carcasa plástica de paragolpes con refuerzo interior y pintura."
+        },
+        "Grave": {
+          "materials": 450.0,
+          "labor": 260.0,
+          "estimated_hours": 4.5,
+          "description": "Sustitución completa de paragolpes, absorvedores de impacto, soportes y sensores."
+        }
+      }
+    },
+    "motor": {
+      "name": "Motor / Mecánica",
+      "aliases": [
+        "motor",
+        "mecanica",
+        "mecánica",
+        "radiador",
+        "alternador",
+        "bomba",
+        "embrague",
+        "transmision",
+        "transmisión",
+        "bloque motor",
+        "bateria",
+        "batería"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 120.0,
+          "labor": 130.0,
+          "estimated_hours": 2.0,
+          "description": "Sustitución de manguitos, correas auxiliares, termostato o batería."
+        },
+        "Moderado": {
+          "materials": 480.0,
+          "labor": 330.0,
+          "estimated_hours": 6.0,
+          "description": "Sustitución de alternador, radiador de refrigeración o bomba de agua dañada."
+        },
+        "Grave": {
+          "materials": 1600.0,
+          "labor": 770.0,
+          "estimated_hours": 14.0,
+          "description": "Reconstrucción de bloque motor, culata, turbo o sustitución de grupo propulsor."
+        }
+      }
+    },
+    "retrovisor": {
+      "name": "Retrovisor / Espejos",
+      "aliases": [
+        "retrovisor",
+        "espejo",
+        "retrovisores",
+        "espejo retrovisor",
+        "espejo lateral"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 35.0,
+          "labor": 30.0,
+          "estimated_hours": 0.5,
+          "description": "Sustitución de cristal o carcasa embellecedora exterior del espejo."
+        },
+        "Moderado": {
+          "materials": 130.0,
+          "labor": 65.0,
+          "estimated_hours": 1.0,
+          "description": "Sustitución de conjunto de retrovisor manual o eléctrico básico."
+        },
+        "Grave": {
+          "materials": 290.0,
+          "labor": 110.0,
+          "estimated_hours": 2.0,
+          "description": "Sustitución de retrovisor fotosensible con abatimiento eléctrico, intermitente LED y sensor de ángulo muerto."
+        }
+      }
+    },
+    "faros": {
+      "name": "Faros y Óptica",
+      "aliases": [
+        "faro",
+        "faros",
+        "optica",
+        "óptica",
+        "piloto",
+        "pilotos",
+        "intermitente",
+        "antiniebla",
+        "luz trasera"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 40.0,
+          "labor": 40.0,
+          "estimated_hours": 0.5,
+          "description": "Pulido de tulipa de policarbonato opaca o sustitución de bombilla/fijación menor."
+        },
+        "Moderado": {
+          "materials": 190.0,
+          "labor": 80.0,
+          "estimated_hours": 1.5,
+          "description": "Sustitución de piloto trasero halógeno o proyector antiniebla con reglaje."
+        },
+        "Grave": {
+          "materials": 650.0,
+          "labor": 150.0,
+          "estimated_hours": 2.5,
+          "description": "Sustitución de proyector delantero Full-LED / Matrix-LED con centralita y calibración."
+        }
+      }
+    },
+    "cerradura": {
+      "name": "Cerradura y Bombines",
+      "aliases": [
+        "cerradura",
+        "bombin",
+        "bombín",
+        "mecanismo puerta",
+        "forzado cerradura"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 40.0,
+          "labor": 55.0,
+          "estimated_hours": 1.0,
+          "description": "Ajuste y lubricación de cerradura y varillaje tras intento de forzado."
+        },
+        "Moderado": {
+          "materials": 120.0,
+          "labor": 95.0,
+          "estimated_hours": 1.5,
+          "description": "Sustitución de bombín mecánico forzado y codificación de llave."
+        },
+        "Grave": {
+          "materials": 280.0,
+          "labor": 165.0,
+          "estimated_hours": 3.0,
+          "description": "Sustitución de cerradura centralizada electrónica con módulo confort y reconfiguración."
+        }
+      }
+    },
+    "fontaneria": {
+      "name": "Fontanería / Daños por Agua (Hogar)",
+      "aliases": [
+        "fontaneria",
+        "fontanería",
+        "tuberia",
+        "tubería",
+        "fuga",
+        "gotera",
+        "humedad",
+        "filtracion",
+        "filtración",
+        "fuga de agua"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 50.0,
+          "labor": 90.0,
+          "estimated_hours": 1.5,
+          "description": "Localización y sellado puntual de junta o llave de paso con prueba de estanqueidad."
+        },
+        "Moderado": {
+          "materials": 180.0,
+          "labor": 220.0,
+          "estimated_hours": 4.0,
+          "description": "Apertura de cata, sustitución de tramo de tubería empotrada, sellado y albañilería básica."
+        },
+        "Grave": {
+          "materials": 450.0,
+          "labor": 480.0,
+          "estimated_hours": 8.0,
+          "description": "Sustitución de bajante comunitaria o colector principal con saneamiento de paramento y pintura de techo."
+        }
+      }
+    }
+  },
+  "default_fallback": {
+    "zone": "chapa",
+    "severity": "Moderado",
+    "materials": 150.0,
+    "labor": 200.0,
+    "description": "Estimación baremada estándar para zona no tipificada específicamente."
+  }
+}

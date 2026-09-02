@@ -123,9 +123,9 @@ gantt
 * **Para:** Obtener una estimación matemática exacta y sin alucinaciones del coste del siniestro.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Tabla de baremos con costes por zona dañada (chapa, pintura, luna delantera, parachoques, motor) y nivel de gravedad (*Leve, Moderado, Grave*).
-- [ ] Función Python `@tool` que calcule: `Coste Total = Materiales + Mano de Obra - Franquicia`.
-- [ ] Retorno estructurado con desglose numérico exacto.
+- [x] Tabla de baremos con costes por zona dañada (chapa, pintura, luna delantera, parachoques, motor) y nivel de gravedad (*Leve, Moderado, Grave*).
+- [x] Función Python `@tool` que calcule: `Coste Total = Materiales + Mano de Obra - Franquicia`.
+- [x] Retorno estructurado con desglose numérico exacto.
 
 ---
 
