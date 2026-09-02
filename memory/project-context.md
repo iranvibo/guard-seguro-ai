@@ -95,8 +95,12 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
       1. Paso 1 (`check_policy_coverage`): Poda inmediata a `Denegado` si no está cubierto (sin herramientas adicionales).
       2. Paso 2 (`assess_claim_risk_and_dispute`): Obligatorio si está cubierto. Poda a `Requiere Peritaje` si hay controversia/fraude/daño estructural.
       3. Paso 3 (`calculate_repair_estimate`): Estimación económica única por tipología de siniestro (290 € en cristales hogar, 400 € en fontanería hogar, multizona combinada en granizo auto).
-    * Suite de 194 tests unitarios y de integración pasando al 100% en verde en Docker (`docker compose run --rm --entrypoint pytest guardseguro-ai`).
-
-
-
-
+- **Pestaña de Base de Conocimiento & Reglas de Decisión (`render_knowledge_tab`)**:
+  - Implementada en `src/ui/knowledge_tab.py` e integrada como tercer tab en `app.py` (`📚 Base de Conocimiento & Reglas de Decisión`).
+  - Agrupa de manera clara e intuitiva todo el conocimiento en el que se basa el agente para evaluar siniestros mediante 5 sub-pestañas:
+    1. **🔄 1. Protocolo de Decisión (Flujo ReAct)**: Diagrama y tarjetas secuenciales de los 4 pasos (1. Cobertura y Short-Circuiting, 2. Riesgos y Controversias, 3. Baremos de Reparación, 4. Dictamen Estructurado JSON & Human-in-the-Loop) junto con principios de eficiencia y no redundancia.
+    2. **📜 2. Catálogo de Coberturas & Exclusiones**: Filtros dinámicos por ramo (Auto vs Hogar) y buscador textual para garantías cubiertas (condiciones, franquicias, palabras clave) y exclusiones expresas (desgaste, alcohol, dolo, ramo cruzado).
+    3. **💶 3. Baremos Oficiales de Reparación**: Tarifa horaria unificada (55,00 €/h), fórmula matemática de liquidación, desglose tabular por ramo, zona y gravedad (Leve, Moderado, Grave: horas, materiales, mano de obra, bruto y descripción técnica) y reglas especiales multizona (granizo auto).
+    4. **⚠️ 4. Matriz de Riesgos & Peritaje**: Criterio de retención cautelar de pago y tablas de disparadores de controversia (versiones contradictorias, sin atestado, denuncias) y de severidad/daño estructural/fraude (chasis, exceso de velocidad, dilación temporal, humedades continuadas).
+    5. **🛡️ 5. Gobernanza e IA Responsable**: Pilares de Privacidad/RGPD (Art. 10), Human-in-the-Loop (Art. 14), Transparencia/Trazabilidad (Art. 12/13) y Matriz completa de cumplimiento del EU AI Act.
+  - Creada suite de tests en `tests/test_ui_knowledge.py`. Suite completa de 198 tests unitarios y de integración pasando al 100% en Docker.

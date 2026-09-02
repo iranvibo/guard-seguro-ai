@@ -24,6 +24,7 @@ from src.ui.components import (
     render_traceability_and_compliance_panel,
 )
 from src.ui.e2e_runner import evaluate_single_test_case, run_all_e2e_suite
+from src.ui.knowledge_tab import render_knowledge_tab
 from src.ui.sample_cases import SAMPLE_CASES, get_sample_case_by_id
 
 logging.basicConfig(level=logging.INFO)
@@ -277,9 +278,10 @@ def main() -> None:
     sidebar_config = render_sidebar(settings)
     init_session_state()
 
-    tab_eval, tab_e2e = st.tabs([
+    tab_eval, tab_e2e, tab_knowledge = st.tabs([
         "📋 Evaluador de Siniestros (Gestor / Demo)",
         "🧪 E2E / Integration Tests (Validación del Agente)",
+        "📚 Base de Conocimiento & Reglas de Decisión",
     ])
 
     with tab_eval:
@@ -287,6 +289,9 @@ def main() -> None:
 
     with tab_e2e:
         render_e2e_tests_tab(sidebar_config, settings)
+
+    with tab_knowledge:
+        render_knowledge_tab()
 
 
 if __name__ == "__main__":
