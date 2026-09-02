@@ -88,7 +88,15 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
     * `expected_tools`: se definió como `["check_policy_coverage", "assess_claim_risk_and_dispute"]`, suprimiendo `calculate_repair_estimate` ya que no procede una tasación tabulada automática para daños estructurales sin inspección previa en bancada.
   - **Calibración de Ground Truth para Casos Multizona / Granizo (CASO-01)**:
     * En `src/ui/sample_cases.py`, se actualizó `expected_payout` de CASO-01 a `1020.0 €` (antes 350.0 €) para reflejar la agregación real de los dos daños tasados por el baremo: Rotura total de luna delantera (Grave: 585.0 €) + Chapa del capó (Moderado: 435.0 €) = 1.020,00 €.
-    * En `src/agent/claim_agent.py`, se enriqueció el motor determinista offline (`evaluate_deterministic_mock`) para detectar siniestros multizona de lunas + chapa y calcular el desglose combinado correspondiente a 1.020,00 €.
-  - Actualizados `tests/test_e2e_runner.py` y suite completa de 194 tests pasando al 100% en verde en Docker (`docker compose run --rm --entrypoint pytest guardseguro-ai`).
+- **Alineación de Ground Truth y Poda Inmediata en Casos Denegados (CASO-02 y CASO-06)**:
+    * **Diagnóstico**: En la ejecución con API (LLM real), CASO-02 y CASO-06 devolvían erróneamente `Requiere Peritaje` por llamada anticipada a riesgos, mientras que en CASO-01, 04 y 05 el LLM omitía el paso obligatorio de riesgos (`assess_claim_risk_and_dispute`) o multiplicaba llamadas en Hogar.
+    * **Decisión de Negocio y Gobernanza**: Se ratificó que el resultado esperado (`Denegado` para excluidos, `Aprobado` para cubiertos) y la secuencia estricta de evaluación deben ser obligatorios y deterministas.
+    * **Corrección**: Se reestructuró el `SYSTEM_PROMPT` y `HUMAN_PROMPT_TEMPLATE` en `src/agent/prompts.py` estableciendo un **Protocolo Secuencial Estricto**:
+      1. Paso 1 (`check_policy_coverage`): Poda inmediata a `Denegado` si no está cubierto (sin herramientas adicionales).
+      2. Paso 2 (`assess_claim_risk_and_dispute`): Obligatorio si está cubierto. Poda a `Requiere Peritaje` si hay controversia/fraude/daño estructural.
+      3. Paso 3 (`calculate_repair_estimate`): Estimación económica única por tipología de siniestro (290 € en cristales hogar, 400 € en fontanería hogar, multizona combinada en granizo auto).
+    * Suite de 194 tests unitarios y de integración pasando al 100% en verde en Docker (`docker compose run --rm --entrypoint pytest guardseguro-ai`).
+
+
 
 
