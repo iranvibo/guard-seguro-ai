@@ -7,6 +7,7 @@ financial resolution cards, intermediate reasoning steps, and EU AI Act complian
 from typing import Any, Dict, Optional
 import streamlit as st
 
+from src.agent.observability import format_reasoning_flow_mermaid
 from src.compliance.models import ComplianceCheckStatus, EUAIActComplianceReport
 from src.core.config import Settings
 from src.core.models import AnonymizedClaim, ClaimAssessment, ClaimInput, CoverageStatus
@@ -362,21 +363,52 @@ def render_traceability_and_compliance_panel(
             with c4:
                 st.metric("Herramientas Invocadas", f"{met.tools_count} tools")
 
+            if met.tools_called:
+                st.markdown("**Secuencia de Herramientas Ejecutadas:**")
+                tool_chips = " ".join([f"<span class='badge-pill' style='background:#003781; color:white;'>🛠️ {tool}</span>" for tool in met.tools_called])
+                st.markdown(f"<div style='margin-bottom: 1rem;'>{tool_chips}</div>", unsafe_allow_html=True)
+
         st.markdown("#### 🔄 Pasos Intermedios del Agente (Thought / Action / Observation):")
         if assessment.intermediate_steps:
             for i, step in enumerate(assessment.intermediate_steps, start=1):
-                tool_name = step.tool_name if hasattr(step, "tool_name") else str(step[0].tool if isinstance(step, (tuple, list)) else "Herramienta")
-                with st.expander(f"Paso {i}: Invocación de Herramienta `{tool_name}`", expanded=(i == 1)):
-                    if hasattr(step, "tool_input"):
-                        st.json({"tool": step.tool_name, "input": step.tool_input, "output": step.tool_output})
-                    elif isinstance(step, (tuple, list)) and len(step) >= 2:
-                        action, obs = step[0], step[1]
-                        st.markdown(f"**Herramienta:** `{getattr(action, 'tool', 'N/A')}`")
-                        st.markdown(f"**Parámetros:** `{getattr(action, 'tool_input', 'N/A')}`")
-                        st.markdown("**Respuesta Obtenida:**")
-                        st.code(str(obs), language="json")
+                # Robust extraction for dictionary or object/tuple step
+                if isinstance(step, dict):
+                    tool_name = step.get("tool", f"tool_{i}")
+                    tool_input = step.get("tool_input", {})
+                    obs = step.get("observation", {})
+                    thought = step.get("thought") or step.get("log", "")
+                elif isinstance(step, (tuple, list)) and len(step) >= 2:
+                    action, obs = step[0], step[1]
+                    tool_name = getattr(action, "tool", f"tool_{i}")
+                    tool_input = getattr(action, "tool_input", {})
+                    thought = getattr(action, "log", "")
+                else:
+                    tool_name = getattr(step, "tool", f"tool_{i}")
+                    tool_input = getattr(step, "tool_input", {})
+                    obs = getattr(step, "observation", {})
+                    thought = getattr(step, "thought", "")
+
+                with st.expander(f"Paso {i}: Invocación de Herramienta `{tool_name}`", expanded=True):
+                    if thought:
+                        st.markdown(f"**💭 Razonamiento del Agente:** *{thought}*")
+
+                    col_in, col_out = st.columns(2)
+                    with col_in:
+                        st.markdown(f"**📥 Parámetros Enviados a `{tool_name}`:**")
+                        st.json(tool_input)
+                    with col_out:
+                        st.markdown(f"**📤 Resultado Devuelto por `{tool_name}`:**")
+                        if isinstance(obs, (dict, list)):
+                            st.json(obs)
+                        else:
+                            st.code(str(obs), language="json")
         else:
             st.info("No se registraron pasos intermedios (ejecución directa).")
+
+        # Visual Mermaid Reasoning Diagram
+        with st.expander("📊 Diagrama de Flujo del Razonamiento (Mermaid)", expanded=False):
+            mermaid_code = format_reasoning_flow_mermaid(assessment)
+            st.markdown(mermaid_code)
 
     with tab_act:
         st.markdown(
