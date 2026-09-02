@@ -1,0 +1,281 @@
+{
+  "version": "1.0",
+  "company": "Allianz Spain",
+  "policy_categories": [
+    {
+      "id": "rotura_lunas",
+      "name": "Rotura de lunas",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cobertura 100% en sustitución y reparación de lunas, parabrisas, luneta trasera y cristales laterales en red de talleres concertados Allianz sin franquicia ni penalización de bonificación.",
+      "keywords": [
+        "luna",
+        "lunas",
+        "parabrisas",
+        "parabrisa",
+        "cristal",
+        "cristales",
+        "luneta",
+        "luneta trasera",
+        "ventanilla",
+        "vidrio",
+        "retrovisor cristal",
+        "rotura de lunas",
+        "rotura de parabrisas"
+      ]
+    },
+    {
+      "id": "fenomenos_atmosfericos",
+      "name": "Fenómenos atmosféricos y Granizo",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cubierto al 100% para daños causados por pedrisco, granizo, viento fuerte (>84 km/h), lluvia torrencial (>40 l/m2/h), rayos y nieve con certificación oficial meteorológica (AEMET) o constancia manifiesta del temporal.",
+      "keywords": [
+        "granizo",
+        "pedrisco",
+        "tormenta",
+        "viento",
+        "temporal",
+        "lluvia",
+        "nieve",
+        "inundacion",
+        "fenomeno meteorologico",
+        "fenomenos atmosfericos",
+        "gota fria",
+        "ciclon",
+        "dana",
+        "vendaval",
+        "rayo"
+      ]
+    },
+    {
+      "id": "colision_danos_propios",
+      "name": "Colisión y Daños Propios",
+      "policy_types": ["Auto"],
+      "is_covered": true,
+      "standard_deductible": 150.0,
+      "conditions": "Cobertura de daños por impacto con otro vehículo, choque con elemento fijo, vuelco o salida de vía. Aplica franquicia estándar contratada de 150.00 € (franquicia 0.00 € si existe contrario identificado 100% culpable con DAA firmado).",
+      "keywords": [
+        "colision",
+        "choque",
+        "golpe",
+        "impacto",
+        "accidente",
+        "alcance",
+        "alcance trasero",
+        "atropello",
+        "vuelco",
+        "salida de via",
+        "chapa",
+        "parachoques",
+        "paragolpes",
+        "aleta",
+        "puerta",
+        "faro",
+        "optica",
+        "colision frontal",
+        "colision lateral"
+      ]
+    },
+    {
+      "id": "robo_hurto",
+      "name": "Robo y Hurto",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cobertura de indemnización por sustracción ilegítima total del vehículo/bienes o reparación íntegra de daños ocasionados por tentativa de robo (bombines forzados, lunas rotas, sustracción de piezas fijas). Obligatorio presentar justificante de denuncia policial formulada en plazo de 48h.",
+      "keywords": [
+        "robo",
+        "sustraccion",
+        "hurto",
+        "forzado",
+        "cerradura forzada",
+        "bombin forzado",
+        "intento de robo",
+        "sustraido",
+        "desvalijado",
+        "apropiacion indebida",
+        "sustraccion de ruedas"
+      ]
+    },
+    {
+      "id": "vandalismo",
+      "name": "Vandalismo y Actos Malintencionados",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 150.0,
+      "conditions": "Cubiertos los daños malintencionados ocasionados por terceras personas desconocidas (rayones en pintura/chapa, rotura intencionada de retrovisores, rotura de antenas o pilotos). Requiere formalización de denuncia policial. Aplica franquicia estándar de 150.00 €.",
+      "keywords": [
+        "vandalismo",
+        "acto malintencionado",
+        "actos malintencionados",
+        "rayado",
+        "rayadura",
+        "rayazo",
+        "rayaduras",
+        "llave",
+        "raya con llave",
+        "pintada",
+        "grafiti",
+        "espejo roto intencionado",
+        "retrovisor arrancado",
+        "rajado de ruedas",
+        "rajada de neumatico",
+        "danios intencionados"
+      ]
+    },
+    {
+      "id": "asistencia_carretera",
+      "name": "Asistencia en Carretera y Remolque",
+      "policy_types": ["Auto"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Asistencia técnica y personal urgente 24 horas desde el km 0. Incluye envío de grúa, remolque a taller de preferencia, sustitución de rueda por pinchazo, rescate de vehículo en desnivel y recarga in situ de batería descargada.",
+      "keywords": [
+        "asistencia",
+        "asistencia en carretera",
+        "grua",
+        "remolque",
+        "pinchazo",
+        "neumatico pinchado",
+        "bateria descargada",
+        "bateria",
+        "sin combustible",
+        "averia en carretera",
+        "rescate",
+        "km 0",
+        "inmovilizado"
+      ]
+    },
+    {
+      "id": "danos_agua",
+      "name": "Daños por Agua y Fugas",
+      "policy_types": ["Hogar", "Auto"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cobertura integral de localización y reparación de averías o escapes accidentales en conducciones fijas de agua, rotura de tuberías, goteras del piso superior e indemnización de daños causados a bienes asegurados o a vecinos.",
+      "keywords": [
+        "agua",
+        "danos por agua",
+        "fuga de agua",
+        "tuberia rota",
+        "tuberia",
+        "gotera",
+        "goteras",
+        "humedad",
+        "filtracion",
+        "atasco",
+        "inundacion domestica",
+        "grifo",
+        "desbordamiento",
+        "bajante"
+      ]
+    },
+    {
+      "id": "incendio_explosion",
+      "name": "Incendio y Explosión",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cobertura al 100% por daños derivados de combustión incontrolada, abrasión, caída de rayo o explosión accidental ajena a negligencia del asegurado, incluyendo gastos de extinción y salvamento de bomberos.",
+      "keywords": [
+        "incendio",
+        "fuego",
+        "quemado",
+        "explosion",
+        "combustion",
+        "calcinado",
+        "abrasion por fuego",
+        "humo de incendio"
+      ]
+    },
+    {
+      "id": "responsabilidad_civil",
+      "name": "Responsabilidad Civil a Terceros",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Garantía de defensa jurídica y abono de indemnizaciones por daños materiales o corporales provocados involuntariamente a terceras personas dentro de los límites estipulados en las condiciones generales de Allianz.",
+      "keywords": [
+        "responsabilidad civil",
+        "danos a terceros",
+        "tercero perjudicado",
+        "indemnizacion a terceros",
+        "lesiones a terceros",
+        "danos materiales a terceros"
+      ]
+    }
+  ],
+  "policy_exclusions": [
+    {
+      "id": "desgaste_mantenimiento",
+      "name": "Desgaste Natural y Falta de Mantenimiento",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": false,
+      "standard_deductible": 0.0,
+      "conditions": "Exclusión expresa de póliza: Quedan excluidas las averías mecánicas ordinarias, el desgaste natural por kilometraje o uso continuado (pastillas de freno, embrague, neumáticos lisos, correas) y las deficiencias causadas por falta de mantenimiento prescrito.",
+      "keywords": [
+        "desgaste",
+        "desgaste natural",
+        "vida util",
+        "falta de mantenimiento",
+        "mantenimiento deficiente",
+        "embrague desgastado",
+        "pastillas desgastadas",
+        "neumatico gastado",
+        "deterioro por uso",
+        "deterioro paulatino",
+        "averia mecanica ordinaria",
+        "oxido",
+        "corrosion natural"
+      ]
+    },
+    {
+      "id": "conduccion_bajo_efectos",
+      "name": "Conducción bajo Efectos de Alcohol o Drogas",
+      "policy_types": ["Auto"],
+      "is_covered": false,
+      "standard_deductible": 0.0,
+      "conditions": "Exclusión legal y contractual absoluta: Siniestros acaecidos cuando el conductor dé positivo en test de alcoholemia superior a la tasa reglamentaria o se encuentre bajo influencia de estupefacientes. No procede indemnización propia y Allianz ejercerá derecho de repetición.",
+      "keywords": [
+        "alcohol",
+        "alcoholemia",
+        "embriaguez",
+        "positivo en alcohol",
+        "drogas",
+        "estupefacientes",
+        "toxicomania",
+        "tasa de alcoholemia",
+        "ebrio"
+      ]
+    },
+    {
+      "id": "dolo_negligencia_grave",
+      "name": "Dolo o Negligencia Grave del Asegurado",
+      "policy_types": ["Auto", "Hogar"],
+      "is_covered": false,
+      "standard_deductible": 0.0,
+      "conditions": "Exclusión de póliza: Siniestros provocados deliberadamente por el tomador/asegurado, simulación de siniestro, negligencia temeraria, participación en carreras ilegales o manipulación fraudulenta de elementos de seguridad.",
+      "keywords": [
+        "dolo",
+        "intencionado por asegurado",
+        "negligencia grave",
+        "carreras ilegales",
+        "carrera ilegal",
+        "carreras clandestinas",
+        "fraude",
+        "autoinfligido",
+        "imprudencia temeraria",
+        "simulacion de siniestro"
+      ]
+    }
+  ],
+  "default_unknown_response": {
+    "is_covered": false,
+    "coverage_type": "Requiere Peritaje / No Catalogado",
+    "standard_deductible": 0.0,
+    "conditions": "El tipo de siniestro o circunstancia descrita no se encuentra tipificado de forma automática en el catálogo estándar de coberturas directas. Se requiere inspección y dictamen pericial humano por parte del equipo técnico de Allianz Spain."
+  }
+}

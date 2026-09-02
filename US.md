@@ -111,9 +111,9 @@ gantt
 * **Para:** Que el agente pueda dictaminar objetivamente si el daño reportado tiene cobertura contratada.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Catálogo de coberturas estructurado en JSON (ej. Fenómenos atmosféricos, Granizo, Rotura de lunas, Colisión, Robo, Vandalismo).
-- [ ] Función Python decorada como Tool (`@tool`) que recibe el tipo de daño y devuelve un JSON con: `{cubierto: bool, condiciones: str, franquicia_estandar: float}`.
-- [ ] Manejo de casos de siniestros no cubiertos o dudosos con retorno explicativo.
+- [x] Catálogo de coberturas estructurado en JSON (ej. Fenómenos atmosféricos, Granizo, Rotura de lunas, Colisión, Robo, Vandalismo).
+- [x] Función Python decorada como Tool (`@tool`) que recibe el tipo de daño y devuelve un JSON con: `{cubierto: bool, condiciones: str, franquicia_estandar: float}`.
+- [x] Manejo de casos de siniestros no cubiertos o dudosos con retorno explicativo.
 
 ---
 
