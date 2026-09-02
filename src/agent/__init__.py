@@ -6,6 +6,7 @@ from src.agent.claim_agent import (
     build_claim_agent,
     evaluate_anonymized_claim,
     evaluate_claim,
+    evaluate_claim_with_compliance,
 )
 from src.agent.observability import (
     AgentAuditorCallbackHandler,
@@ -31,6 +32,7 @@ __all__ = [
     "build_claim_agent",
     "evaluate_claim",
     "evaluate_anonymized_claim",
+    "evaluate_claim_with_compliance",
     "DEFAULT_AGENT_TOOLS",
     "SYSTEM_PROMPT",
     "HUMAN_PROMPT_TEMPLATE",
@@ -45,4 +47,5 @@ __all__ = [
     "format_reasoning_flow_mermaid",
     "export_audit_trail_dict",
 ]
+
 

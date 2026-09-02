@@ -446,3 +446,48 @@ def evaluate_anonymized_claim(
         force_deterministic=force_deterministic,
     )
 
+
+def evaluate_claim_with_compliance(
+    claim: Union[AnonymizedClaim, ClaimInput, str],
+    claim_id: Optional[str] = None,
+    policy_type: str = "Auto",
+    llm: Optional[BaseChatModel] = None,
+    settings: Optional[Settings] = None,
+    force_deterministic: bool = False,
+) -> tuple[ClaimAssessment, Any]:
+    """Evaluate a claim and immediately generate its EU AI Act Compliance Report (US-08).
+
+    Args:
+        claim: AnonymizedClaim, ClaimInput, or string claim text.
+        claim_id: Identifier of the claim.
+        policy_type: Type of policy (Auto, Hogar).
+        llm: Optional chat model instance.
+        settings: Optional Settings instance.
+        force_deterministic: Flag to enforce offline deterministic execution.
+
+    Returns:
+        Tuple of (ClaimAssessment, EUAIActComplianceReport).
+    """
+    from src.compliance.auditor import generate_compliance_report
+
+    assessment = evaluate_claim(
+        claim=claim,
+        claim_id=claim_id,
+        policy_type=policy_type,
+        llm=llm,
+        settings=settings,
+        force_deterministic=force_deterministic,
+    )
+
+    anonymized_claim = claim if isinstance(claim, AnonymizedClaim) else None
+    claim_input = claim if isinstance(claim, ClaimInput) else None
+
+    compliance_report = generate_compliance_report(
+        assessment=assessment,
+        anonymized_claim=anonymized_claim,
+        claim_input=claim_input,
+    )
+
+    return assessment, compliance_report
+
+

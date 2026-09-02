@@ -171,11 +171,12 @@ gantt
 * **Para:** Garantizar que la solución cumple con los requisitos para sistemas de IA de **Alto Riesgo** en el sector asegurador.
 
 #### Criterios de Aceptación (DoD):
-- [ ] Generación automática de la ficha técnica de cumplimiento:
+- [x] Generación automática de la ficha técnica de cumplimiento:
   - **Clasificación de Riesgo:** Justificación según Anexo III del EU AI Act.
   - **Human-in-the-Loop:** Garantía de que la decisión del agente es una *propuesta* sujeta a validación del gestor humano.
   - **Transparencia y Explicabilidad:** Justificación basada en los logs de la US-07.
   - **Calidad de Datos y Privacidad:** Acreditación mediante el filtro PII de la US-03.
+
 
 ---
 
