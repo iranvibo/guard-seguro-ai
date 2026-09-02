@@ -307,6 +307,81 @@
           "description": "Sustitución de bajante comunitaria o colector principal con saneamiento de paramento y pintura de techo."
         }
       }
+    },
+    "cristaleria_hogar": {
+      "name": "Cristalería y Ventanas (Hogar)",
+      "aliases": [
+        "cristaleria hogar",
+        "cristal ventana",
+        "ventana",
+        "ventanas",
+        "ventanal",
+        "ventanales",
+        "claraboya",
+        "claraboyas",
+        "vidrio ventana",
+        "climalit",
+        "doble acristalamiento",
+        "cristalera",
+        "mampara",
+        "espejo fijo"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 50.0,
+          "labor": 60.0,
+          "estimated_hours": 1.0,
+          "description": "Sustitución de vidrio simple o cristal de ventana estándar con junquillos."
+        },
+        "Moderado": {
+          "materials": 180.0,
+          "labor": 110.0,
+          "estimated_hours": 2.0,
+          "description": "Sustitución de doble acristalamiento Climalit o claraboya con sellado estanco."
+        },
+        "Grave": {
+          "materials": 450.0,
+          "labor": 220.0,
+          "estimated_hours": 4.0,
+          "description": "Reposición integral de gran ventanal corredero con perfilería y acristalamiento de seguridad."
+        }
+      }
+    },
+    "albanileria_pintura_hogar": {
+      "name": "Albañilería y Pintura (Hogar)",
+      "aliases": [
+        "albanileria",
+        "albanileria hogar",
+        "pintura hogar",
+        "techo",
+        "pared",
+        "paramento",
+        "humedad techo",
+        "gotera techo",
+        "escayola",
+        "pladur",
+        "saneamiento pared"
+      ],
+      "severities": {
+        "Leve": {
+          "materials": 40.0,
+          "labor": 82.5,
+          "estimated_hours": 1.5,
+          "description": "Saneamiento puntual y pintura plástica antimanchas de zona afectada por humedad."
+        },
+        "Moderado": {
+          "materials": 130.0,
+          "labor": 192.5,
+          "estimated_hours": 3.5,
+          "description": "Reparación de falso techo de escayola/pladur, tendido de yeso y pintura completa de estancia."
+        },
+        "Grave": {
+          "materials": 380.0,
+          "labor": 440.0,
+          "estimated_hours": 8.0,
+          "description": "Demolición, reconstrucción de tabique, impermeabilización y pintura de paramentos completos."
+        }
+      }
     }
   },
   "default_fallback": {

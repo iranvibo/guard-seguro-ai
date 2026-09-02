@@ -5,7 +5,7 @@
     {
       "id": "rotura_lunas",
       "name": "Rotura de lunas",
-      "policy_types": ["Auto", "Hogar"],
+      "policy_types": ["Auto"],
       "is_covered": true,
       "standard_deductible": 0.0,
       "conditions": "Cobertura 100% en sustitución y reparación de lunas, parabrisas, luneta trasera y cristales laterales en red de talleres concertados Allianz sin franquicia ni penalización de bonificación.",
@@ -14,8 +14,8 @@
         "lunas",
         "parabrisas",
         "parabrisa",
-        "cristal",
-        "cristales",
+        "cristal delantero",
+        "cristales coche",
         "luneta",
         "luneta trasera",
         "ventanilla",
@@ -23,6 +23,30 @@
         "retrovisor cristal",
         "rotura de lunas",
         "rotura de parabrisas"
+      ]
+    },
+    {
+      "id": "rotura_cristales_hogar",
+      "name": "Rotura de Cristales (Hogar)",
+      "policy_types": ["Hogar"],
+      "is_covered": true,
+      "standard_deductible": 0.0,
+      "conditions": "Cobertura al 100% en sustitución de cristales de ventanas, ventanales, claraboyas, espejos fijos, mamparas de baño y placas vitrocerámicas en la vivienda asegurada sin franquicia.",
+      "keywords": [
+        "cristal",
+        "cristales",
+        "ventana",
+        "ventanas",
+        "ventanal",
+        "ventanales",
+        "claraboya",
+        "claraboyas",
+        "espejo fijo",
+        "mampara",
+        "vitroceramica",
+        "rotura de cristales",
+        "climalit",
+        "doble acristalamiento"
       ]
     },
     {
@@ -269,6 +293,44 @@
         "autoinfligido",
         "imprudencia temeraria",
         "simulacion de siniestro"
+      ]
+    },
+    {
+      "id": "vehiculos_en_hogar",
+      "name": "Vehículos a Motor no amparados en Póliza de Hogar",
+      "policy_types": ["Hogar"],
+      "is_covered": false,
+      "standard_deductible": 0.0,
+      "conditions": "Exclusión de póliza Hogar: Los daños a vehículos a motor, carrocería, lunas de coche o averías mecánicas deben tramitarse mediante póliza específica de Auto y no están amparados por el seguro de Hogar.",
+      "keywords": [
+        "vehiculo",
+        "coche",
+        "automovil",
+        "moto",
+        "motocicleta",
+        "matricula",
+        "luna delantera",
+        "parabrisas",
+        "parachoques",
+        "carroceria",
+        "taller concertado"
+      ]
+    },
+    {
+      "id": "inmuebles_en_auto",
+      "name": "Daños a Inmuebles o Vivienda no amparados en Póliza de Auto",
+      "policy_types": ["Auto"],
+      "is_covered": false,
+      "standard_deductible": 0.0,
+      "conditions": "Exclusión de póliza Auto: Los siniestros domésticos, fontanería de vivienda, tejados, paramentos o cristalería de inmuebles deben tramitarse mediante póliza de Hogar y no están amparados por el seguro de Automóvil.",
+      "keywords": [
+        "vivienda",
+        "inmueble",
+        "piso",
+        "cocina",
+        "claraboya",
+        "paramento",
+        "tuberia empotrada"
       ]
     }
   ],

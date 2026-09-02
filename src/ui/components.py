@@ -65,14 +65,53 @@ def apply_custom_styles() -> None:
         }
 
         .badge-pill {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            display: inline-flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 20px;
-            padding: 0.2rem 0.75rem;
+            padding: 0.25rem 0.8rem;
             font-size: 0.8rem;
             font-weight: 600;
             color: #FFFFFF;
+            white-space: nowrap;
+        }
+
+        .tool-chip-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+            margin-top: 0.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-chip {
+            display: inline-flex;
+            align-items: center;
+            background: #003781;
+            color: #FFFFFF !important;
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: monospace;
+            box-shadow: 0 2px 5px rgba(0, 55, 129, 0.25);
+            border: 1px solid rgba(0, 163, 224, 0.5);
+            white-space: nowrap;
+        }
+
+        .tool-step-num {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-right: 0.35rem;
         }
 
         .metric-card {
@@ -365,8 +404,11 @@ def render_traceability_and_compliance_panel(
 
             if met.tools_called:
                 st.markdown("**Secuencia de Herramientas Ejecutadas:**")
-                tool_chips = " ".join([f"<span class='badge-pill' style='background:#003781; color:white;'>🛠️ {tool}</span>" for tool in met.tools_called])
-                st.markdown(f"<div style='margin-bottom: 1rem;'>{tool_chips}</div>", unsafe_allow_html=True)
+                tool_chips = "".join([
+                    f"<span class='tool-chip'><span class='tool-step-num'>{idx}</span>🛠️ {tool}</span>"
+                    for idx, tool in enumerate(met.tools_called, start=1)
+                ])
+                st.markdown(f"<div class='tool-chip-container'>{tool_chips}</div>", unsafe_allow_html=True)
 
         st.markdown("#### 🔄 Pasos Intermedios del Agente (Thought / Action / Observation):")
         if assessment.intermediate_steps:

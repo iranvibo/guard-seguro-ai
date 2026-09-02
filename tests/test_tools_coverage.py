@@ -95,6 +95,18 @@ class TestVerifyPolicyCoverageExclusions:
         assert expected_exclusion_keyword.lower() in result.coverage_type.lower() or "exclusión" in result.coverage_type.lower()
         assert len(result.conditions) > 10
 
+    def test_cross_policy_exclusions(self):
+        """Ensure claims for vehicles are excluded under Hogar, and home claims under Auto."""
+        # Vehicle damage under Hogar policy
+        res_vehicle_in_hogar = verify_policy_coverage("Rotura de parabrisas y chapa del coche", policy_type="Hogar")
+        assert res_vehicle_in_hogar.is_covered is False
+        assert "Vehículos" in res_vehicle_in_hogar.coverage_type
+
+        # Residential damage under Auto policy
+        res_home_in_auto = verify_policy_coverage("Fuga de agua en tuberia empotrada de cocina de la vivienda", policy_type="Auto")
+        assert res_home_in_auto.is_covered is False
+        assert "Inmuebles" in res_home_in_auto.coverage_type
+
 
 class TestVerifyPolicyCoverageEdgeCases:
     """Tests for edge cases, missing data and uncatalogued claims."""

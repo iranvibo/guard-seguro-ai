@@ -98,6 +98,7 @@ def main() -> None:
             "Tipo de Póliza:",
             options=["Auto", "Hogar"],
             index=0 if policy_default_type == "Auto" else 1,
+            key=f"policy_type_{selected_option}",
         )
 
     # Claim Input Form

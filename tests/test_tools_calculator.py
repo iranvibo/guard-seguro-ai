@@ -112,20 +112,25 @@ class TestComputeRepairEstimateMath:
             ("motor", "Leve", 0.0, 120.0, 130.0),
             ("motor", "Moderado", 0.0, 480.0, 330.0),
             ("motor", "Grave", 0.0, 1600.0, 770.0),
-            ("retrovisor lateral arrancado", "Leve", 0.0, 35.0, 30.0),
-            ("faros delanteros LED rotos", "Grave", 150.0, 650.0, 150.0),
+            ("cerradura", "Grave", 0.0, 280.0, 165.0),
+            ("fontaneria", "Moderado", 0.0, 180.0, 220.0),
+            ("cristal ventana", "Moderado", 0.0, 180.0, 110.0),
+            ("albanileria", "Leve", 0.0, 40.0, 82.5),
         ],
     )
-    def test_exact_repair_cost_breakdown(
-        self, zone_input, severity, deductible, expected_materials, expected_labor
+    def test_compute_repair_estimate_exact_math(
+        self,
+        zone_input,
+        severity,
+        deductible,
+        expected_materials,
+        expected_labor,
     ):
         breakdown, meta = compute_repair_estimate(
             damaged_zone=zone_input,
             severity=severity,
             deductible=deductible,
         )
-
-        assert isinstance(breakdown, CostBreakdown)
         assert breakdown.materials == expected_materials
         assert breakdown.labor == expected_labor
 

@@ -111,9 +111,78 @@ class TestUISampleCases:
 
         assessment, compliance_report = evaluate_claim_with_compliance(
             claim=anonymized,
+            policy_type=case.policy_type,
             force_deterministic=True,
         )
 
         assert isinstance(assessment, ClaimAssessment)
         assert assessment.status in [CoverageStatus.APPROVED, CoverageStatus.REQUIRES_EXPERT]
+        assert isinstance(compliance_report, EUAIActComplianceReport)
+
+    def test_sample_case_4_hogar_storm_flow(self):
+        """Ensure CASO-04 (Hogar - Tormenta y Cristales) yields approved resolution."""
+        case = get_sample_case_by_id("CASO-04")
+        claim_input = ClaimInput(
+            claim_id=case.case_id,
+            policy_type=case.policy_type,
+            raw_text=case.raw_text,
+        )
+        anonymized = anonymize_claim(claim_input)
+
+        assessment, compliance_report = evaluate_claim_with_compliance(
+            claim=anonymized,
+            policy_type=case.policy_type,
+            force_deterministic=True,
+        )
+
+        assert isinstance(assessment, ClaimAssessment)
+        assert assessment.status == CoverageStatus.APPROVED
+        assert assessment.is_covered is True
+        assert assessment.cost_breakdown is not None
+        assert assessment.cost_breakdown.net_total > 0
+        assert isinstance(compliance_report, EUAIActComplianceReport)
+
+    def test_sample_case_5_hogar_water_damage_flow(self):
+        """Ensure CASO-05 (Hogar - Daños por Agua) yields approved resolution."""
+        case = get_sample_case_by_id("CASO-05")
+        claim_input = ClaimInput(
+            claim_id=case.case_id,
+            policy_type=case.policy_type,
+            raw_text=case.raw_text,
+        )
+        anonymized = anonymize_claim(claim_input)
+
+        assessment, compliance_report = evaluate_claim_with_compliance(
+            claim=anonymized,
+            policy_type=case.policy_type,
+            force_deterministic=True,
+        )
+
+        assert isinstance(assessment, ClaimAssessment)
+        assert assessment.status == CoverageStatus.APPROVED
+        assert assessment.is_covered is True
+        assert assessment.cost_breakdown is not None
+        assert assessment.cost_breakdown.net_total > 0
+        assert isinstance(compliance_report, EUAIActComplianceReport)
+
+    def test_sample_case_6_hogar_wear_tear_exclusion(self):
+        """Ensure CASO-06 (Hogar - Desgaste y Falta de Mantenimiento) yields denied resolution."""
+        case = get_sample_case_by_id("CASO-06")
+        claim_input = ClaimInput(
+            claim_id=case.case_id,
+            policy_type=case.policy_type,
+            raw_text=case.raw_text,
+        )
+        anonymized = anonymize_claim(claim_input)
+
+        assessment, compliance_report = evaluate_claim_with_compliance(
+            claim=anonymized,
+            policy_type=case.policy_type,
+            force_deterministic=True,
+        )
+
+        assert isinstance(assessment, ClaimAssessment)
+        assert assessment.status == CoverageStatus.DENIED
+        assert assessment.is_covered is False
+        assert assessment.net_payout == 0.0
         assert isinstance(compliance_report, EUAIActComplianceReport)

@@ -28,7 +28,7 @@ class SampleCase:
 SAMPLE_CASES: List[SampleCase] = [
     SampleCase(
         case_id="CASO-01",
-        title="Tormenta con cobertura (Granizo y Lunas)",
+        title="Tormenta con cobertura (Auto - Granizo y Lunas)",
         short_description="Rotura de luna delantera y abolladuras en chapa por fuerte pedrisco.",
         category="Cobertura Favorable",
         icon="⛈️",
@@ -41,11 +41,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "ES9121000418450200051332 o reparación en taller concertado de Allianz."
         ),
         expected_status="APROBADO",
-        tags=["Granizo", "Rotura de Lunas", "Chapa", "Con Franquicia"],
+        tags=["Auto", "Granizo", "Rotura de Lunas", "Chapa", "Sin Franquicia"],
     ),
     SampleCase(
         case_id="CASO-02",
-        title="Daño no cubierto (Desgaste y Avería Mecánica)",
+        title="Daño no cubierto (Auto - Desgaste y Avería Mecánica)",
         short_description="Fallo de embrague y deterioro por uso ordinario del vehículo.",
         category="Exclusión de Póliza",
         icon="🚫",
@@ -57,11 +57,11 @@ SAMPLE_CASES: List[SampleCase] = [
             "y falta de mantenimiento mecánico periódico. Reclama el reembolso íntegro de la factura del taller."
         ),
         expected_status="DENEGADO",
-        tags=["Desgaste", "Avería Mecánica", "Exclusión General", "Sin Cobertura"],
+        tags=["Auto", "Desgaste", "Avería Mecánica", "Exclusión General", "Sin Cobertura"],
     ),
     SampleCase(
         case_id="CASO-03",
-        title="Caso complejo con terceros (Colisión Múltiple)",
+        title="Caso complejo con terceros (Auto - Colisión Múltiple)",
         short_description="Colisión con daños estructurales severos y partes contradictorios.",
         category="Derivación a Peritaje",
         icon="🔍",
@@ -74,7 +74,56 @@ SAMPLE_CASES: List[SampleCase] = [
             "y motor. Los terceros implicados han presentado denuncia y no hay atestado policial concluyente."
         ),
         expected_status="REQUIERE_PERITAJE",
-        tags=["Colisión Múltiple", "Terceros", "Daño Estructural", "Peritaje Técnico"],
+        tags=["Auto", "Colisión Múltiple", "Terceros", "Daño Estructural", "Peritaje Técnico"],
+    ),
+    SampleCase(
+        case_id="CASO-04",
+        title="Tormenta con cobertura (Hogar - Cristales y Temporal)",
+        short_description="Rotura de ventanal Climalit y claraboya por fuerte tormenta de pedrisco en vivienda.",
+        category="Cobertura Favorable",
+        icon="⛈️",
+        policy_type="Hogar",
+        raw_text=(
+            "La asegurada María Dolores Ruiz Santos con DNI 33445566T y teléfono 622334455 declara siniestro "
+            "ocurrido en su vivienda unifamiliar en Calle Rosales 12, Pozuelo de Alarcón (Madrid). A causa de la fuerte tormenta "
+            "de pedrisco y viento extremo registrada oficialmente por AEMET, se produjo la rotura completa del cristal "
+            "climalit del ventanal del salón y la fractura de la claraboya del ático, requiriendo reposición urgente "
+            "de cristalería de la vivienda."
+        ),
+        expected_status="APROBADO",
+        tags=["Hogar", "Fenómenos Atmosféricos", "Cristalería Hogar", "Sin Franquicia"],
+    ),
+    SampleCase(
+        case_id="CASO-05",
+        title="Daños por agua con cobertura (Hogar - Rotura Tubería)",
+        short_description="Fuga de agua en tubería empotrada de cocina con afectación al vecino inferior.",
+        category="Cobertura Favorable",
+        icon="💧",
+        policy_type="Hogar",
+        raw_text=(
+            "El tomador Javier Navarro Vidal con DNI 50876543M y teléfono 678123456 notifica siniestro en su piso "
+            "de Calle Gran Vía 88, Valencia. Ha detectado una fuga accidental por rotura en la conducción empotrada "
+            "de agua sanitaria bajo el fregadero de la cocina, causando inundación en el suelo y filtración con daños "
+            "por humedad en el techo de la vivienda del vecino inferior. Solicita fontanería y reparación urgente."
+        ),
+        expected_status="APROBADO",
+        tags=["Hogar", "Daños por Agua", "Fontanería", "Responsabilidad Civil"],
+    ),
+    SampleCase(
+        case_id="CASO-06",
+        title="Daño no cubierto (Hogar - Falta de Mantenimiento)",
+        short_description="Humedades crónicas en tejado y goteras debidas a corrosión y falta de mantenimiento.",
+        category="Exclusión de Póliza",
+        icon="🚫",
+        policy_type="Hogar",
+        raw_text=(
+            "El asegurado Pedro Sánchez Alarcón con DNI 09876543K y correo p.sanchez@example.com solicita la reparación "
+            "del tejado de su vivienda unifamiliar en Calle Encinas 5 de Toledo. Informa de goteras y filtraciones continuadas "
+            "desde hace más de un año debido a la corrosión natural de los canalones atascados y el desgaste por falta de "
+            "mantenimiento periódico prescrito en la cubierta del inmueble."
+        ),
+        expected_status="DENEGADO",
+        tags=["Hogar", "Falta de Mantenimiento", "Deterioro Paulatino", "Sin Cobertura"],
     ),
 ]
 
