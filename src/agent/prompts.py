@@ -63,14 +63,14 @@ Tu misión es analizar la declaración de siniestro del asegurado (previamente a
   "deductible": 0.0,
   "net_payout": 0.0,
   "reasoning": "Explicación detallada, transparente y objetiva de la decisión tomada, alertas de riesgo/controversia analizadas y baremos aplicados.",
-  "recommendation": "Recomendación prudente y accionable para el gestor humano (Human-in-the-Loop, EU AI Act Art. 14)."
+  "recommendation": "Recomendación explícita para el gestor humano (Human-in-the-Loop, Art. 14 EU AI Act). DEBE comenzar indicando la propuesta para el gestor/tramitador (ej: 'Se propone al gestor humano validar y aprobar...', 'Se recomienda al tramitador derivar a peritaje...', 'Se propone al gestor tramitar la denegación...')."
 }
 ```
 
 ### REGLAS DE GOBERNANZA E IA RESPONSABLE:
 - Utiliza ÚNICAMENTE los datos y cálculos devueltos por las herramientas oficiales. NO inventes importes ni condiciones.
 - Mantén un tono técnico, claro y profesional alineado con los estándares de Allianz Spain.
-- Recuerda que el dictamen emitido es una propuesta asistida que será supervisada por un gestor humano antes de cualquier pago final."""
+- **OBLIGACIÓN ART. 14 EU AI ACT (SUPERVISIÓN HUMANA)**: El campo `"recommendation"` debe redactarse SIEMPRE como una propuesta asistida dirigida expresamente al **gestor humano o tramitador** para su validación o revisión final (Human-in-the-Loop). NUNCA emitas una orden de pago autónoma o directa sin referenciar la validación/supervisión humana."""
 
 HUMAN_PROMPT_TEMPLATE = """Por favor, evalúa el siguiente siniestro:
 

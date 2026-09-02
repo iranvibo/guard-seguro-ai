@@ -126,12 +126,22 @@ class EUAIActAuditor:
     ) -> HumanInTheLoopAudit:
         """Evaluate compliance with Art. 14 Human Oversight (Human-in-the-Loop)."""
         has_rec = bool(assessment.recommendation and assessment.recommendation.strip())
-        is_explicit_proposal = (
-            "gestor" in assessment.recommendation.lower()
-            or "humano" in assessment.recommendation.lower()
-            or "revisión" in assessment.recommendation.lower()
-            or "validación" in assessment.recommendation.lower()
-            or "peritaje" in assessment.recommendation.lower()
+        rec_lower = assessment.recommendation.lower()
+        is_explicit_proposal = any(
+            kw in rec_lower
+            for kw in [
+                "gestor",
+                "humano",
+                "revisión",
+                "revision",
+                "validación",
+                "validacion",
+                "peritaje",
+                "tramitador",
+                "supervisión",
+                "supervision",
+                "propuesta",
+            ]
         )
 
         status = ComplianceCheckStatus.COMPLIANT if (has_rec and is_explicit_proposal) else ComplianceCheckStatus.PARTIALLY_COMPLIANT

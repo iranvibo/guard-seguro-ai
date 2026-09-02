@@ -66,5 +66,6 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
   - En `src/tools/data/repair_rates.json` y `src/tools/repair_calculator.py`, se añadió soporte para `policy_type` (`Auto` vs `Hogar`) en `compute_repair_estimate` y `@tool calculate_repair_estimate`, enriqueciendo alias residenciales (`tejado`, `cubierta`, `canalones`, `inmueble`) en `albanileria_pintura_hogar` para evitar que elementos de inmuebles se tasen erróneamente con baremos de chapa/carrocería de automoción.
   - En `src/tools/risk_assessor.py`, se añadieron indicadores para siniestros con dilación temporal excesiva (> 1 año), falta de mantenimiento y afectación de cubiertas estructurales.
   - En `src/tools/data/policy_catalog.json`, se incorporaron términos de corrosión y falta de mantenimiento periódico a la exclusión `desgaste_mantenimiento`. Suite de 188 tests unitarios pasando al 100% en Docker (`docker compose exec guardseguro-ai pytest tests/ -v`).
-
-
+- **Alineación de Supervisión Humana (EU AI Act Art. 14 / Human-in-the-Loop)**:
+  - En `src/agent/prompts.py`, se reforzó la instrucción del `SYSTEM_PROMPT` para el campo `recommendation`, exigiendo que el LLM redacte siempre su dictamen como una propuesta asistida dirigida expresamente al gestor humano o tramitador (ej: *"Se propone al gestor humano validar y aprobar...", "Se recomienda al tramitador derivar a peritaje..."*).
+  - En `src/compliance/auditor.py`, se amplió el diccionario de términos reconocidos por `_evaluate_human_in_the_loop` (*gestor, tramitador, supervisión, propuesta, validación, peritaje*) para garantizar que las auditorías regulatorias reflejen consistentemente el estado **✅ Cumple**. Suite de 188 tests unitarios pasando al 100% en Docker.
