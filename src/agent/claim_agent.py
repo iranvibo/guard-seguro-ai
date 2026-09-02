@@ -199,62 +199,63 @@ class ClaimEvaluatorAgent:
                 )
             )
 
-            # 3. Step 3: Repair Calculation
-            tools_called.append("calculate_repair_estimate")
-            # Estimate severity from text
-            severity = DamageSeverity.LIGHT
-            lower_text = claim_text.lower()
-            if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto", "chasis"]):
-                severity = DamageSeverity.SEVERE
-            elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
-                severity = DamageSeverity.MODERATE
-
-            t1 = time.perf_counter()
-            breakdown, meta = compute_repair_estimate(
-                damaged_zone=claim_text,
-                severity=severity,
-                deductible=cov_res.standard_deductible,
-                policy_type=policy_type,
-            )
-            t_calc = round(time.perf_counter() - t1, 4)
-            cost_breakdown = breakdown
-
-            calc_tool_output = {
-                "materiales": breakdown.materials,
-                "mano_de_obra": breakdown.labor,
-                "coste_bruto": breakdown.gross_total,
-                "franquicia": breakdown.deductible,
-                "total_a_pagar": breakdown.net_total,
-                "zona_afectada": meta["zone_name"],
-                "gravedad": meta["severity"],
-                "detalle": meta["description"],
-            }
-
-            intermediate_steps.append(
-                (
-                    type("AgentActionMock", (), {
-                        "tool": "calculate_repair_estimate",
-                        "tool_input": {
-                            "damaged_zone": meta["zone_name"],
-                            "severity": meta["severity"],
-                            "deductible": cov_res.standard_deductible,
-                        },
-                        "log": f"Invoking calculate_repair_estimate for zone '{meta['zone_name']}' with severity '{meta['severity']}'.",
-                    })(),
-                    json.dumps(calc_tool_output, ensure_ascii=False),
-                )
-            )
-
             if risk_eval.requires_expert_appraisal:
                 status = CoverageStatus.REQUIRES_EXPERT
                 summary = f"Siniestro cubierto en póliza pero requiere peritaje presencial por factores de controversia/riesgo ({risk_eval.risk_level})."
                 reasoning = (
                     f"El siniestro encaja en la cobertura '{cov_res.coverage_type}'. No obstante, se han detectado alertas de riesgo: "
                     f"{'; '.join(risk_eval.alerts)}. Por gobernanza, control de fraude y seguridad jurídica, se suspende la liquidación "
-                    f"automática hasta que un perito presencial o tramitador humano dictamine la culpabilidad."
+                    f"automática hasta que un perito presencial o tramitador humano dictamine la culpabilidad y cuantía."
                 )
                 recommendation = risk_eval.recommendation
+                cost_breakdown = None
             else:
+                # 3. Step 3: Repair Calculation (only for non-disputed standard claims)
+                tools_called.append("calculate_repair_estimate")
+                # Estimate severity from text
+                severity = DamageSeverity.LIGHT
+                lower_text = claim_text.lower()
+                if any(k in lower_text for k in ["grave", "severo", "siniestro total", "destrozado", "arrancado", "fuerte impacto", "chasis"]):
+                    severity = DamageSeverity.SEVERE
+                elif any(k in lower_text for k in ["moderado", "abolladura", "grieta", "rotura", "golpe", "colision"]):
+                    severity = DamageSeverity.MODERATE
+
+                t1 = time.perf_counter()
+                breakdown, meta = compute_repair_estimate(
+                    damaged_zone=claim_text,
+                    severity=severity,
+                    deductible=cov_res.standard_deductible,
+                    policy_type=policy_type,
+                )
+                t_calc = round(time.perf_counter() - t1, 4)
+                cost_breakdown = breakdown
+
+                calc_tool_output = {
+                    "materiales": breakdown.materials,
+                    "mano_de_obra": breakdown.labor,
+                    "coste_bruto": breakdown.gross_total,
+                    "franquicia": breakdown.deductible,
+                    "total_a_pagar": breakdown.net_total,
+                    "zona_afectada": meta["zone_name"],
+                    "gravedad": meta["severity"],
+                    "detalle": meta["description"],
+                }
+
+                intermediate_steps.append(
+                    (
+                        type("AgentActionMock", (), {
+                            "tool": "calculate_repair_estimate",
+                            "tool_input": {
+                                "damaged_zone": meta["zone_name"],
+                                "severity": meta["severity"],
+                                "deductible": cov_res.standard_deductible,
+                            },
+                            "log": f"Invoking calculate_repair_estimate for zone '{meta['zone_name']}' with severity '{meta['severity']}'.",
+                        })(),
+                        json.dumps(calc_tool_output, ensure_ascii=False),
+                    )
+                )
+
                 status = CoverageStatus.APPROVED
                 summary = f"Siniestro cubierto bajo garantía de '{cov_res.coverage_type}'."
                 reasoning = (
@@ -297,7 +298,7 @@ class ClaimEvaluatorAgent:
                 if cost_breakdown
                 else None
             ),
-            "deductible": cov_res.standard_deductible if cost_breakdown else 0.0,
+            "deductible": cov_res.standard_deductible if cov_res.is_covered else 0.0,
             "net_payout": cost_breakdown.net_total if cost_breakdown else 0.0,
             "reasoning": reasoning,
             "recommendation": recommendation,

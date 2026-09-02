@@ -69,7 +69,10 @@ class TestE2ERunner:
         assert result.status_passed is True
         assert result.payout_passed is True
         assert result.actual_status == "Requiere Peritaje"
-        assert result.actual_payout == 2220.0
+        assert result.actual_payout == 0.0
+        assert "check_policy_coverage" in result.actual_tools
+        assert "assess_claim_risk_and_dispute" in result.actual_tools
+        assert "calculate_repair_estimate" not in result.actual_tools
 
     def test_run_all_e2e_suite_all_pass(self):
         """Run all 6 predefined demo cases through the E2E runner and assert 100% pass rate."""

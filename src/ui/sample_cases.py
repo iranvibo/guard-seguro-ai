@@ -84,8 +84,8 @@ SAMPLE_CASES: List[SampleCase] = [
         ),
         expected_status="Requiere Peritaje",
         tags=["Auto", "Colisión Múltiple", "Terceros", "Daño Estructural", "Peritaje Técnico"],
-        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute", "calculate_repair_estimate"],
-        expected_payout=2220.0,
+        expected_tools=["check_policy_coverage", "assess_claim_risk_and_dispute"],
+        expected_payout=0.0,
         expected_is_covered=True,
     ),
     SampleCase(

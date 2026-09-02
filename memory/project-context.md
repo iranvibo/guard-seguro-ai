@@ -81,6 +81,11 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
   - Se implementó el motor de ejecución y evaluación en `src/ui/e2e_runner.py` (`evaluate_single_test_case`, `run_all_e2e_suite`, modelo `TestCaseResult`).
   - Se añadieron componentes de visualización y botones de copia en `src/ui/components.py` (`render_e2e_suite_metrics`, `render_e2e_test_card`, `render_e2e_copy_button`).
   - Se integró la nueva pestaña en `app.py` (`🧪 E2E / Integration Tests (Validación del Agente)`), permitiendo ejecutar toda la batería de tests con 1 clic ("▶️ Pasar Todos los Tests"), visualizando métricas globales de ejecución (Tasa de Aprobación, Tests Pasados/Fallados, Tiempo Total), tarjetas individuales con estado `PASS / FAIL` y desglose de los 3 criterios (Herramientas, Resolución, Indemnización), y botón `"copy inform in json"` interactivo por cada caso.
-  - Creada suite de tests en `tests/test_e2e_runner.py`. Suite completa de 194 tests pasando al 100% en Docker (`docker exec guardseguro-ai-app pytest`).
+  - **Calibración de Ground Truth para Casos con Peritaje Obligatorio (CASO-03)**:
+  - Se corrigió la expectativa en `src/ui/sample_cases.py` y `src/agent/claim_agent.py` para siniestros con dictamen `Requiere Peritaje`.
+  - En concordancia con las reglas de negocio de seguros y gobernanza (bloqueo de STP / pago automático en casos de litigio o daños estructurales):
+    * `expected_payout`: se estableció en `0.0 €` (pago suspendido cautelarmente a la espera del dictamen del perito presencial).
+    * `expected_tools`: se definió como `["check_policy_coverage", "assess_claim_risk_and_dispute"]`, suprimiendo `calculate_repair_estimate` ya que no procede una tasación tabulada automática para daños estructurales sin inspección previa en bancada.
+  - Actualizados `tests/test_e2e_runner.py` y suite completa de 194 tests pasando al 100% en verde.
 
 
