@@ -17,15 +17,15 @@ from src.core.models import AnonymizedClaim, ClaimAssessment, ClaimInput, Covera
 
 
 def apply_custom_styles() -> None:
-    """Inject custom CSS styling aligned with Allianz design system and modern dark/light mode."""
+    """Inject custom CSS styling aligned with GuardSeguro enterprise design system and modern dark/light mode."""
     st.markdown(
         """
         <style>
-        /* Allianz Corporate Theme & Modern Glassmorphism Styles */
+        /* GuardSeguro Corporate Theme & Modern Glassmorphism Styles */
         :root {
-            --allianz-blue: #003781;
-            --allianz-light-blue: #007AB3;
-            --allianz-accent: #00A3E0;
+            --guardseguro-blue: #003781;
+            --guardseguro-light-blue: #007AB3;
+            --guardseguro-accent: #00A3E0;
             --card-bg: rgba(255, 255, 255, 0.05);
             --card-border: rgba(0, 55, 129, 0.2);
             --success-color: #10B981;
@@ -280,7 +280,7 @@ def render_header() -> None:
                 Agente Evaluador de Siniestros con Filtros de IA Responsable & Gobernanza EU AI Act
             </p>
             <div class="header-badge-row">
-                <span class="badge-pill">🏢 Allianz Spain · CoE Automation & AI</span>
+                <span class="badge-pill">🏢 GuardSeguro Seguros · CoE Automation & AI</span>
                 <span class="badge-pill">🤖 ReAct Agent + Tool Calling</span>
                 <span class="badge-pill">🔒 Filtro PII RGPD Activo</span>
                 <span class="badge-pill">⚖️ EU AI Act Ready (Alto Riesgo)</span>
@@ -331,7 +331,7 @@ def render_sidebar(settings: Settings) -> Dict[str, Any]:
         )
 
         st.markdown("---")
-        st.caption("GuardSeguro AI · Allianz Spain CoE Automation & AI")
+        st.caption("GuardSeguro AI · CoE Automation & AI")
 
     return {"force_deterministic": force_deterministic}
 
@@ -709,7 +709,7 @@ def render_resolution_panel(assessment: ClaimAssessment) -> None:
     st.markdown("#### 👤 Supervisión Humana (Human-in-the-Loop)")
     st.markdown(f"**Recomendación del Asistente:** *{assessment.recommendation}*")
 
-    st.caption("Como gestor de Allianz, seleccione la acción a ejecutar sobre esta propuesta:")
+    st.caption("Como gestor de la aseguradora, seleccione la acción a ejecutar sobre esta propuesta:")
     btn_col1, btn_col2, btn_col3, btn_col4 = st.columns(4)
     with btn_col1:
         if st.button("✅ Validar y Aprobar", use_container_width=True, type="primary"):

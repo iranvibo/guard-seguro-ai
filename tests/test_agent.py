@@ -44,8 +44,8 @@ class TestAgentPrompts:
     """Validate prompt templates and system prompt contents."""
 
     def test_system_prompt_role_and_instructions(self) -> None:
-        """Verify the system prompt sets the explicit Allianz Spain role and instructions."""
-        assert "Asistente de evaluación de siniestros para Allianz Spain" in SYSTEM_PROMPT
+        """Verify the system prompt sets the explicit GuardSeguro Seguros role and instructions."""
+        assert "Asistente de evaluación de siniestros para GuardSeguro Seguros" in SYSTEM_PROMPT
         assert "check_policy_coverage" in SYSTEM_PROMPT
         assert "calculate_repair_estimate" in SYSTEM_PROMPT
         assert "status" in SYSTEM_PROMPT

@@ -41,7 +41,7 @@ SAMPLE_CASES: List[SampleCase] = [
             "ocurrido el 28 de agosto en Calle Mayor 45 de Madrid. Su vehículo con matrícula 5678-LMN "
             "sufrió el impacto de una fuerte tormenta de granizo, provocando la rotura total de la luna delantera "
             "y abolladuras moderadas en la chapa del capó. Solicita indemnización en su cuenta bancaria "
-            "ES9121000418450200051332 o reparación en taller concertado de Allianz."
+            "ES9121000418450200051332 o reparación en taller concertado de GuardSeguro."
         ),
         expected_status="Aprobado",
         tags=["Auto", "Granizo", "Rotura de Lunas", "Chapa", "Sin Franquicia"],

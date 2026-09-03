@@ -1,7 +1,7 @@
 """Compliance module: EU AI Act audit reports and governance metrics (US-08).
 
 Provides tools for high-risk classification, human-in-the-loop oversight validation,
-transparency accreditation, and automated technical audit sheets for Allianz Spain.
+transparency accreditation, and automated technical audit sheets for GuardSeguro Seguros.
 """
 
 from src.compliance.auditor import (

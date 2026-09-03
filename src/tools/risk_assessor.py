@@ -1,4 +1,4 @@
-"""Risk, dispute, and fraud indicator assessment tool for Allianz Spain.
+"""Risk, dispute, and fraud indicator assessment tool for GuardSeguro Seguros.
 
 Analyzes insurance claim declarations to identify contradictory statements,
 third-party disputes, lack of conclusive police reports (atestados),

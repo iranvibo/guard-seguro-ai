@@ -117,7 +117,7 @@ class TestAgentAuditorCallbackHandler:
         # 2. LLM start
         handler.on_llm_start(
             serialized={},
-            prompts=["Eres un evaluador de siniestros de Allianz Spain."],
+            prompts=["Eres un evaluador de siniestros de GuardSeguro Seguros."],
         )
         assert handler.prompt_tokens > 0
 
@@ -277,7 +277,7 @@ class TestAuditReportFormatters:
             is_covered=True,
             coverage_summary="Rotura de lunas cubierta sin franquicia.",
             cost_breakdown=breakdown,
-            reasoning="Parabrisas reparado según baremos Allianz.",
+            reasoning="Parabrisas reparado según baremos GuardSeguro.",
             recommendation="Emitir pago al taller concertado.",
             intermediate_steps=[
                 {

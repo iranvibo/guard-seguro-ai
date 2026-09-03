@@ -5,16 +5,16 @@
 > Fill this section when deploying this system in a specific environment. All agents must read this before operating.
 
 ```
-Company / Project : Allianz Spain (CoE Automation & AI) / GuardSeguro AI – Agente Evaluador de Siniestros con Filtros de IA Responsable
+Company / Project : GuardSeguro Seguros (Insurtech CoE Automation & AI) / GuardSeguro AI – Agente Evaluador de Siniestros con Filtros de IA Responsable
 Domain            : Seguros (Insurtech) / GenAI, Sistemas de Agentes y Gobernanza
 Primary language  : Español (Spanish) / Inglés (English)
-Main users        : Gestores de siniestros de Allianz Spain / Evaluadores técnicos y de negocio
+Main users        : Gestores de siniestros de GuardSeguro / Evaluadores técnicos y de negocio
 Key constraints   : 
   - IA Responsable (Responsible AI) y Privacidad: Enmascaramiento obligatorio de datos personales (PII) antes de invocar cualquier LLM.
   - Cumplimiento Regulatorio: Alineación y justificación según el marco del EU AI Act.
   - Seguridad y LLMOps: Claves de API gestionadas mediante variables de entorno protegidas, control de versiones en GitHub y despliegue público en producción (Streamlit Cloud / HF Spaces).
   - Stack Tecnológico: Python, Streamlit (UI), LangChain / smolagents (Framework de Agentes), OpenAI (GPT-4o-mini) o Hugging Face API.
-Notes             : Proyecto de alto impacto diseñado para demostrar dominio práctico de Python y alineación directa con los requisitos de la vacante de Senior AI Engineer (GenAI) en Allianz Spain (Agentes con herramientas de verificación y cálculo, trazabilidad/logs de decisiones y arquitectura lista para producción).
+Notes             : Arquitectura de referencia enterprise de alto impacto diseñada para demostrar dominio práctico de Python y capacidades avanzadas de Senior AI Engineer (GenAI) en el sector asegurador (Agentes con herramientas de verificación y cálculo, trazabilidad/logs de decisiones y arquitectura lista para producción).
 ```
 
 ---

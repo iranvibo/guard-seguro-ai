@@ -1,7 +1,7 @@
 """Prompt definitions and templates for the GuardSeguro AI Claim Assessment Agent.
 
 Defines the system prompt, instructions, and ReAct tool-calling guidance for
-evaluating insurance claims under Allianz Spain policy standards.
+evaluating insurance claims under GuardSeguro Seguros policy standards.
 """
 
 from langchain_core.messages import SystemMessage
@@ -12,8 +12,8 @@ from langchain_core.prompts import (
     PromptTemplate,
 )
 
-SYSTEM_PROMPT = """Eres el Asistente de evaluación de siniestros para Allianz Spain (CoE Automation & AI).
-Tu misión es analizar la declaración de siniestro del asegurado (previamente anonimizada por motivos de privacidad y RGPD), determinar objetivamente si tiene cobertura, evaluar riesgos/controversias y calcular la indemnización correspondiente utilizando las herramientas oficiales de Allianz.
+SYSTEM_PROMPT = """Eres el Asistente de evaluación de siniestros para GuardSeguro Seguros (CoE Automation & AI).
+Tu misión es analizar la declaración de siniestro del asegurado (previamente anonimizada por motivos de privacidad y RGPD), determinar objetivamente si tiene cobertura, evaluar riesgos/controversias y calcular la indemnización correspondiente utilizando las herramientas oficiales de GuardSeguro.
 
 ### PROTOCOLO DE EVALUACIÓN SECUENCIAL (ReAct & Tool Calling):
 Debes seguir OBLIGATORIAMENTE el siguiente flujo secuencial paso a paso:
@@ -87,7 +87,7 @@ Debes seguir OBLIGATORIAMENTE el siguiente flujo secuencial paso a paso:
 
 ### REGLAS DE GOBERNANZA E IA RESPONSABLE:
 - Utiliza ÚNICAMENTE los datos y cálculos devueltos por las herramientas oficiales. NO inventes importes ni condiciones.
-- Mantén un tono técnico, claro y profesional alineado con los estándares de Allianz Spain.
+- Mantén un tono técnico, claro y profesional alineado con los estándares de GuardSeguro Seguros.
 - **OBLIGACIÓN ART. 14 EU AI ACT (SUPERVISIÓN HUMANA)**: El campo `"recommendation"` debe redactarse SIEMPRE como una propuesta asistida dirigida expresamente al **gestor humano o tramitador** para su validación o revisión final (Human-in-the-Loop). NUNCA emitas una orden de pago autónoma o directa sin referenciar la validación/supervisión humana."""
 
 HUMAN_PROMPT_TEMPLATE = """Por favor, evalúa el siguiente siniestro siguiendo el protocolo ReAct paso a paso (1. check_policy_coverage -> 2. assess_claim_risk_and_dispute si está cubierto -> 3. calculate_repair_estimate si procede):

@@ -161,7 +161,7 @@ class CostBreakdown(BaseModel):
     net_total: float = Field(
         default=0.0,
         ge=0.0,
-        description="Final payout payable by Allianz (gross_total - deductible, minimum 0).",
+        description="Final payout payable by GuardSeguro (gross_total - deductible, minimum 0).",
     )
 
     @model_validator(mode="after")

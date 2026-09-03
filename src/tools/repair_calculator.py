@@ -1,4 +1,4 @@
-"""Repair cost estimation and baremo calculation tool for Allianz Spain.
+"""Repair cost estimation and baremo calculation tool for GuardSeguro Seguros.
 
 Provides deterministic calculation of material and labor costs based on damaged
 vehicle/property zones and severity levels, subtracting deductibles to compute
@@ -255,7 +255,7 @@ def calculate_repair_estimate(
 ) -> str:
     """Calcula la estimación económica exacta de reparación según la zona dañada, la gravedad y el ramo de la póliza.
 
-    Aplica los baremos técnicos de Allianz Spain para obtener el desglose matemático:
+    Aplica los baremos técnicos de GuardSeguro Seguros para obtener el desglose matemático:
     Coste Bruto = Materiales + Mano de Obra
     Coste Neto (Total a Pagar) = max(0, Coste Bruto - Franquicia)
 

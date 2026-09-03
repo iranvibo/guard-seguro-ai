@@ -32,7 +32,7 @@ class EUAIActAuditor:
         Args:
             system_name: Optional custom system name string.
         """
-        self.system_name = system_name or "GuardSeguro AI - Agente Evaluador de Siniestros (Allianz Spain CoE)"
+        self.system_name = system_name or "GuardSeguro AI - Agente Evaluador de Siniestros (Insurtech CoE)"
 
     def audit(
         self,

@@ -1,4 +1,4 @@
-"""Agent module: LLM orchestration, ReAct tool-calling agent, and tracing for Allianz Spain."""
+"""Agent module: LLM orchestration, ReAct tool-calling agent, and tracing for GuardSeguro Seguros."""
 
 from src.agent.claim_agent import (
     DEFAULT_AGENT_TOOLS,

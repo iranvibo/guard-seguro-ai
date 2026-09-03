@@ -6,10 +6,10 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 [![Pydantic v2](https://img.shields.io/badge/Pydantic-v2-E92063?style=for-the-badge&logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
 [![EU AI Act](https://img.shields.io/badge/EU%20AI%20Act-High%20Risk%20Compliant-003781?style=for-the-badge&logo=europeanunion&logoColor=white)](https://artificialintelligenceact.eu/)
-[![Tests](https://img.shields.io/badge/Tests-169%20Passed%20(100%25)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
+[![Tests](https://img.shields.io/badge/Tests-198%20Passed%20(100%25)-brightgreen?style=for-the-badge&logo=pytest&logoColor=white)](https://docs.pytest.org/)
 
-> **Proyecto de demostración técnica y de gobernanza para la posición de Senior AI Engineer (GenAI)**  
-> **Centro de Excelencia (CoE) de Automatización e Inteligencia Artificial — Allianz Spain** (Ref. 102972)
+> **Plataforma Enterprise de Evaluación de Siniestros con IA Responsable y Cumplimiento EU AI Act**  
+> **Centro de Excelencia (CoE) de Automatización e Inteligencia Artificial Insurtech**
 
 ---
 
@@ -29,14 +29,14 @@
 6. [Guía de Ejecución Local con Python](#-guía-de-ejecución-local-con-python)
 7. [Despliegue Cloud (Streamlit Community / Hugging Face / Contenedores)](#-despliegue-cloud-y-llmops)
 8. [Matriz de Cumplimiento EU AI Act (Reglamento UE 2024/1689)](#-matriz-de-cumplimiento-eu-ai-act)
-9. [Justificación Técnica y Narrativa para Allianz Spain](#-justificación-técnica-para-allianz-spain)
+9. [Justificación Técnica y Arquitectura Enterprise](#-justificación-técnica-y-arquitectura-enterprise)
 10. [Estructura del Repositorio](#-estructura-del-repositorio)
 
 ---
 
 ## 🎯 Resumen Ejecutivo y Propuesta de Valor
 
-**GuardSeguro AI** es una solución enterprise que simula el asistente inteligente de un gestor de siniestros de **Allianz Spain**. Resuelve el análisis y dictamen de siniestros complejos combinando **Modelos de Lenguaje (GenAI)**, **Sistemas Basados en Agentes con Invocación de Herramientas (*Tool Calling*)**, un **motor estricto de IA Responsable (Anonimización de PII pre-LLM)** y una **evaluación automática de gobernanza según el EU AI Act**.
+**GuardSeguro AI** es una solución enterprise que simula el asistente inteligente de un gestor de siniestros de **GuardSeguro Seguros**. Resuelve el análisis y dictamen de siniestros complejos combinando **Modelos de Lenguaje (GenAI)**, **Sistemas Basados en Agentes con Invocación de Herramientas (*Tool Calling*)**, un **motor estricto de IA Responsable (Anonimización de PII pre-LLM)** y una **evaluación automática de gobernanza según el EU AI Act**.
 
 ### Puntos Fuertes Diferenciales:
 * 🔒 **Privacidad Total (Zero PII Leak):** Ningún dato personal identificable (DNI/NIE, matrículas, teléfonos, emails, cuentas bancarias IBAN, direcciones postales o nombres) se envía al LLM externo. Se enmascara localmente mediante expresiones regulares y gazetteers contextuales, y se desenmascara solo al renderizar la decisión final para el gestor humano.
@@ -154,7 +154,7 @@ flowchart TD
 
 ### 6. Dashboard Interactivo en Streamlit
 * **Ubicación:** [`app.py`](app.py) y [`src/ui/`](src/ui/)
-* **Paleta Corporativa:** Estilo sobrio y profesional adaptado a la identidad visual de Allianz (`#003781`, `#001E50`, `#00A3E0`, `#F4F7FB`).
+* **Paleta Corporativa:** Estilo sobrio y profesional corporativo (`#003781`, `#001E50`, `#00A3E0`, `#F4F7FB`).
 * **3 Casos Predefinidos en 1 Clic:**
   1. *Caso 1 (Aprobado):* Tormenta y granizo con rotura de lunas (cobertura total sin franquicia).
   2. *Caso 2 (Rechazado):* Avería de embrague por desgaste natural (exclusión contractualmente motivada).
@@ -294,27 +294,27 @@ El `Dockerfile` incluye `HEALTHCHECK` y configuración no-root listo para despli
 
 ---
 
-## 💼 Justificación Técnica para Allianz Spain
+## 💼 Justificación Técnica y Arquitectura Enterprise
 
-### Alineación con los requisitos de Senior AI Engineer (GenAI - CoE Automation & AI):
+### Capacidades de Ingeniería de IA y Gobernanza en Producción:
 
 > *"Dominio avanzado de Python y desarrollo de software, diseño de sistemas basados en agentes, gobierno de datos, Responsible AI y despliegue en producción con LLMOps."*
 
 1. **Más allá de un simple Chatbot / Wrapper de API:** GuardSeguro AI no realiza simples llamadas estáticas a un LLM. Diseña un sistema de agentes ReAct que razona, planifica e invoca herramientas especializadas (*Policy Coverage* y *Repair Rates*) mediante contratos de datos fuertemente tipados con Pydantic v2.
 2. **Mentalidad Enterprise y Gobernanza Real:** En el sector asegurador, la privacidad y la regulación no son opcionales. La implementación del filtro PII antes del LLM y la auditoría automática según el **EU AI Act** demuestran visión integral de negocio y cumplimiento normativo.
-3. **Buenas Prácticas de Ingeniería y LLMOps:** Dockerfile multi-stage seguro, gestión de secretos desacoplada, observabilidad de tokens/costes/latencia, tests unitarios exhaustivos (169 tests con 100% de éxito) y arquitectura limpia y modular.
+3. **Buenas Prácticas de Ingeniería y LLMOps:** Dockerfile multi-stage seguro, gestión de secretos desacoplada, observabilidad de tokens/costes/latencia, tests unitarios exhaustivos (198 tests con 100% de éxito) y arquitectura limpia y modular.
 
 ---
 
 ## 📂 Estructura del Repositorio
 
 ```text
-allianz-python/
+guard-seguro-ai/
 ├── .dockerignore                 # Exclusiones seguras de construcción Docker
 ├── .env.example                  # Plantilla de variables de entorno (sin secretos)
 ├── .gitignore                    # Exclusiones de control de versiones Git
 ├── .streamlit/
-│   └── config.toml               # Configuración y tema visual corporativo Allianz
+│   └── config.toml               # Configuración y tema visual corporativo GuardSeguro
 ├── Dockerfile                    # Contenedor multi-stage optimizado y no-root
 ├── docker-compose.yml            # Orquestador local con healthcheck y volumenes
 ├── requirements.txt              # Dependencias fijadas y compatibles
@@ -360,4 +360,4 @@ allianz-python/
 
 ## 📄 Licencia
 
-Este proyecto ha sido desarrollado como demostración técnica de alta fidelidad para el proceso de selección de **Allianz Spain** (CoE Automation & AI). Todos los derechos reservados.
+Este proyecto ha sido desarrollado como arquitectura de referencia enterprise para el sector asegurador (Insurtech CoE Automation & AI). Todos los derechos reservados.

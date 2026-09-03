@@ -110,7 +110,7 @@ class HumanInTheLoopAudit(BaseModel):
         description="Recommended action provided for human review.",
     )
     override_mechanism: str = Field(
-        default="El gestor de siniestros de Allianz mantiene control total para modificar, aprobar o revocar la propuesta del agente en cualquier momento.",
+        default="El gestor de siniestros de la entidad aseguradora mantiene control total para modificar, aprobar o revocar la propuesta del agente en cualquier momento.",
         description="Description of human override and dispute capability.",
     )
     status: ComplianceCheckStatus = Field(
@@ -194,7 +194,7 @@ class EUAIActComplianceReport(BaseModel):
         description="Associated claim identifier.",
     )
     system_name: str = Field(
-        default="GuardSeguro AI - Agente Evaluador de Siniestros (Allianz Spain CoE)",
+        default="GuardSeguro AI - Agente Evaluador de Siniestros (Insurtech CoE)",
         description="Name of the evaluated AI system.",
     )
     assessed_at: datetime = Field(

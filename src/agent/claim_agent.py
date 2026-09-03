@@ -1,4 +1,4 @@
-"""Claim assessment ReAct agent using LangChain tool calling for Allianz Spain.
+"""Claim assessment ReAct agent using LangChain tool calling for GuardSeguro Seguros.
 
 Coordinates policy coverage checking and repair cost calculation tools to produce
 strongly typed, auditable ClaimAssessment resolutions.

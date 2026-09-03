@@ -1,7 +1,7 @@
 # Product Backlog & User Stories — GuardSeguro AI
 
 > **Proyecto**: GuardSeguro AI – Agente Evaluador de Siniestros con Filtros de IA Responsable  
-> **Organización**: Allianz Spain (CoE Automation & AI)  
+> **Organización**: GuardSeguro Seguros (Insurtech CoE Automation & AI)  
 > **Rol de Gestión**: Senior Technical Project Manager (AI / GenAI)  
 > **Metodología**: Agile / Scrum — Enfoque Modular, Incremental y Desacoplado  
 
@@ -40,7 +40,7 @@ gantt
 ---
 
 ### **US-01: Inicialización del Entorno, Dockerización y Gestión de Secretos**
-* **Como:** Ingeniero de Software / DevOps de Allianz.
+* **Como:** Ingeniero de Software / DevOps.
 * **Quiero:** Configurar la estructura de carpetas del proyecto, entorno virtual de Python, `Dockerfile`, `docker-compose.yml`, `.dockerignore`, `requirements.txt` y gestión segura de variables de entorno (`.env`).
 * **Para:** Garantizar un desarrollo modular, reproducible, aislado mediante contenedores Docker y que ninguna clave de API quede expuesta en el control de versiones.
 
@@ -88,7 +88,7 @@ gantt
 ---
 
 ### **US-03: Módulo de Detección y Enmascaramiento de PII**
-* **Como:** Responsable de Privacidad y Cumplimiento RGPD de Allianz.
+* **Como:** Responsable de Privacidad y Cumplimiento RGPD.
 * **Quiero:** Un módulo en Python que identifique y reemplace datos personales (nombres, DNI/NIE, matrículas, teléfonos, emails, direcciones) por pseudónimos (`[PERSONA_1]`, `[DNI_1]`).
 * **Para:** Evitar que datos sensibles salgan del perímetro seguro antes de invocar cualquier LLM comercial.
 
@@ -107,7 +107,7 @@ gantt
 
 ### **US-04: Herramienta de Verificación de Coberturas de Póliza**
 * **Como:** Gestor de Siniestros.
-* **Quiero:** Una herramienta de consulta (`check_policy_coverage`) que determine si un tipo de incidente está cubierto por la póliza tipo de Allianz Auto/Hogar.
+* **Quiero:** Una herramienta de consulta (`check_policy_coverage`) que determine si un tipo de incidente está cubierto por la póliza tipo de GuardSeguro Auto/Hogar.
 * **Para:** Que el agente pueda dictaminar objetivamente si el daño reportado tiene cobertura contratada.
 
 #### Criterios de Aceptación (DoD):
@@ -118,7 +118,7 @@ gantt
 ---
 
 ### **US-05: Herramienta de Estimación Económica y Baremos de Reparación**
-* **Como:** Perito / Evaluador de Allianz.
+* **Como:** Perito / Evaluador de Siniestros.
 * **Quiero:** Una herramienta de cálculo (`calculate_repair_estimate`) que calcule el coste de materiales y mano de obra según la pieza afectada y el nivel de gravedad.
 * **Para:** Obtener una estimación matemática exacta y sin alucinaciones del coste del siniestro.
 
@@ -141,14 +141,14 @@ gantt
 
 #### Criterios de Aceptación (DoD):
 - [x] Agente configurado con LangChain (`create_tool_calling_agent`) o `smolagents` conectado al modelo `gpt-4o-mini`.
-- [x] Prompt del sistema con rol explícito: *Asistente de evaluación de siniestros para Allianz Spain*.
+- [x] Prompt del sistema con rol explícito: *Asistente de evaluación de siniestros para GuardSeguro Seguros*.
 - [x] El agente invoca primero la verificación de cobertura; si está cubierto, invoca la estimación económica; finalmente sintetiza el dictamen.
 - [x] Salida estructurada garantizada en formato JSON/Pydantic.
 
 ---
 
 ### **US-07: Trazabilidad, Observabilidad y Registro de Razonamiento**
-* **Como:** Auditor de IA de Allianz.
+* **Como:** Auditor de IA y Cumplimiento.
 * **Quiero:** Registrar y visualizar el flujo de pensamiento (*Thought/Action/Observation*) y métricas de consumo (tokens, tiempo de respuesta).
 * **Para:** Garantizar que el sistema no es una "caja negra" y permite auditar cada decisión tomada.
 
@@ -186,7 +186,7 @@ gantt
 ---
 
 ### **US-09: Dashboard Interactivo en Streamlit**
-* **Como:** Evaluador técnico o de negocio en una entrevista con Allianz.
+* **Como:** Evaluador técnico o de negocio en una demostración del producto.
 * **Quiero:** Una interfaz web intuitiva donde pueda probar siniestros con ejemplos predefinidos en un clic y ver el flujo en tiempo real.
 * **Para:** Experimentar de forma visual e inmediata la potencia y robustez del sistema.
 
@@ -200,7 +200,7 @@ gantt
 ---
 
 ### **US-10: Contenerización Docker, Despliegue Cloud & LLMOps**
-* **Como:** Reclutador / Responsable del CoE de Allianz / Ingeniero de Operaciones.
+* **Como:** Responsable del CoE de IA / Ingeniero de Operaciones.
 * **Quiero:** Ejecutar la aplicación en contenedores Docker (localmente con `docker compose up` o en la nube) y acceder a la aplicación desplegada con un `README.md` profesional.
 * **Para:** Validar la capacidad de despliegue en producción, reproducibilidad del entorno, portabilidad y buenas prácticas de ingeniería de software y LLMOps.
 
@@ -208,7 +208,7 @@ gantt
 - [x] Imagen Docker testeada y ejecutable localmente mediante `docker compose up --build`.
 - [x] Aplicación desplegada en Streamlit Community Cloud, Hugging Face Spaces o plataforma basada en contenedores.
 - [x] Secretos (`OPENAI_API_KEY`) gestionados de forma segura mediante inyección en `.env` / consola de la nube (sin hardcodear en el repositorio ni en la imagen Docker).
-- [x] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de despliegue y ejecución con Docker, Guía de ejecución manual en Python y Justificación técnica para Allianz.
+- [x] `README.md` completo con: Arquitectura, Diagrama de Flujo, Guía de despliegue y ejecución con Docker, Guía de ejecución manual en Python y Justificación técnica enterprise.
 
 ---
 

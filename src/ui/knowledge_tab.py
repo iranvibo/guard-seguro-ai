@@ -59,7 +59,7 @@ def render_knowledge_tab() -> None:
         st.markdown("#### 🎯 Protocolo de Evaluación Secuencial Paso a Paso")
         st.write(
             "El agente sigue un protocolo estricto y determinista en 4 pasos para garantizar decisiones "
-            "objetivas, eficientes y alineadas con las directrices de **Allianz Spain**:"
+            "objetivas, eficientes y alineadas con las directrices de **GuardSeguro Seguros**:"
         )
 
         st.markdown(
@@ -112,7 +112,7 @@ def render_knowledge_tab() -> None:
                         </span>
                     </div>
                     <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
-                        <strong>Solo si el siniestro está cubierto y NO requiere peritaje:</strong> Consulta la base de datos de baremos oficiales de Allianz por zona dañada y nivel de gravedad (Leve, Moderado, Grave), deduciendo la franquicia contratada.
+                        <strong>Solo si el siniestro está cubierto y NO requiere peritaje:</strong> Consulta la base de datos de baremos oficiales de GuardSeguro por zona dañada y nivel de gravedad (Leve, Moderado, Grave), deduciendo la franquicia contratada.
                     </p>
                     <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981; padding: 0.5rem; border-radius: 4px;">
                         <strong>⚡ Regla de Eficiencia (Cero Redundancia):</strong> Máximo 1 llamada por siniestro estándar (o 2 llamadas para granizo multizona: luna delantera + chapa). Tras obtener los importes, se detienen todas las herramientas.
@@ -262,7 +262,7 @@ def render_knowledge_tab() -> None:
                 <ul style="margin: 0.4rem 0 0 1.2rem; font-size: 0.92rem;">
                     <li><code>Coste Bruto = Materiales (€) + Mano de Obra (€)</code></li>
                     <li><code>Total a Indemnizar (Neto) = max(0.00, Coste Bruto - Franquicia (€))</code></li>
-                    <li><strong>Tarifa Horaria de Mano de Obra Allianz:</strong> <code>{hourly_rate:.2f} €/hora</code></li>
+                    <li><strong>Tarifa Horaria de Mano de Obra GuardSeguro:</strong> <code>{hourly_rate:.2f} €/hora</code></li>
                 </ul>
             </div>
             """,

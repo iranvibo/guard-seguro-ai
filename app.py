@@ -1,7 +1,7 @@
 """GuardSeguro AI — Streamlit Interactive Dashboard (US-09).
 
 Agente Evaluador de Siniestros con Filtros de IA Responsable & Gobernanza EU AI Act
-Allianz Spain · CoE Automation & AI
+GuardSeguro Seguros · CoE Automation & AI
 """
 
 import logging
@@ -267,7 +267,7 @@ def main() -> None:
     settings = get_settings()
 
     st.set_page_config(
-        page_title="GuardSeguro AI | Allianz Spain",
+        page_title="GuardSeguro AI | Insurtech Enterprise",
         page_icon="🛡️",
         layout="wide",
         initial_sidebar_state="expanded",

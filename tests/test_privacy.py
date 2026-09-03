@@ -191,7 +191,7 @@ class TestRealisticInsuranceClaimsDoD:
         claim_text = (
             "El cliente Pedro Ruiz con NIE X9876543K denuncia la rotura de ventanilla lateral y robo de "
             "pertenencias en su coche matrícula 9988-BZX. Teléfono de contacto: +34 688 99 00 11, "
-            "correo electrónico: p.ruiz@allianz-seguros.es."
+            "correo electrónico: p.ruiz@guardseguro.es."
         )
         masked, mapping = mask_pii(claim_text)
 
@@ -199,7 +199,7 @@ class TestRealisticInsuranceClaimsDoD:
         assert "X9876543K" not in masked
         assert "9988-BZX" not in masked
         assert "+34 688 99 00 11" not in masked
-        assert "p.ruiz@allianz-seguros.es" not in masked
+        assert "p.ruiz@guardseguro.es" not in masked
 
         assert unmask_pii(masked, mapping) == claim_text
 

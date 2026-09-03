@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "company": "Allianz Spain",
+  "company": "GuardSeguro Seguros",
   "policy_categories": [
     {
       "id": "rotura_lunas",
@@ -8,7 +8,7 @@
       "policy_types": ["Auto"],
       "is_covered": true,
       "standard_deductible": 0.0,
-      "conditions": "Cobertura 100% en sustitución y reparación de lunas, parabrisas, luneta trasera y cristales laterales en red de talleres concertados Allianz sin franquicia ni penalización de bonificación.",
+      "conditions": "Cobertura 100% en sustitución y reparación de lunas, parabrisas, luneta trasera y cristales laterales en red de talleres concertados de GuardSeguro sin franquicia ni penalización de bonificación.",
       "keywords": [
         "luna",
         "lunas",
@@ -221,7 +221,7 @@
       "policy_types": ["Auto", "Hogar"],
       "is_covered": true,
       "standard_deductible": 0.0,
-      "conditions": "Garantía de defensa jurídica y abono de indemnizaciones por daños materiales o corporales provocados involuntariamente a terceras personas dentro de los límites estipulados en las condiciones generales de Allianz.",
+      "conditions": "Garantía de defensa jurídica y abono de indemnizaciones por daños materiales o corporales provocados involuntariamente a terceras personas dentro de los límites estipulados en las condiciones generales de GuardSeguro.",
       "keywords": [
         "responsabilidad civil",
         "danos a terceros",
@@ -266,7 +266,7 @@
       "policy_types": ["Auto"],
       "is_covered": false,
       "standard_deductible": 0.0,
-      "conditions": "Exclusión legal y contractual absoluta: Siniestros acaecidos cuando el conductor dé positivo en test de alcoholemia superior a la tasa reglamentaria o se encuentre bajo influencia de estupefacientes. No procede indemnización propia y Allianz ejercerá derecho de repetición.",
+      "conditions": "Exclusión legal y contractual absoluta: Siniestros acaecidos cuando el conductor dé positivo en test de alcoholemia superior a la tasa reglamentaria o se encuentre bajo influencia de estupefacientes. No procede indemnización propia y GuardSeguro ejercerá derecho de repetición.",
       "keywords": [
         "alcohol",
         "alcoholemia",
@@ -342,6 +342,6 @@
     "is_covered": false,
     "coverage_type": "Requiere Peritaje / No Catalogado",
     "standard_deductible": 0.0,
-    "conditions": "El tipo de siniestro o circunstancia descrita no se encuentra tipificado de forma automática en el catálogo estándar de coberturas directas. Se requiere inspección y dictamen pericial humano por parte del equipo técnico de Allianz Spain."
+    "conditions": "El tipo de siniestro o circunstancia descrita no se encuentra tipificado de forma automática en el catálogo estándar de coberturas directas. Se requiere inspección y dictamen pericial humano por parte del equipo técnico de GuardSeguro Seguros."
   }
 }

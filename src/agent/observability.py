@@ -328,7 +328,7 @@ def format_reasoning_flow_mermaid(assessment: ClaimAssessment) -> str:
         "```mermaid",
         "flowchart TD",
         f'    Start(["📥 Reclamación {assessment.claim_id}"]) --> PII["🛡️ Filtro PII Anonimizado"]',
-        '    PII --> Agent["🤖 Agente ReAct (Allianz Evaluator)"]',
+        '    PII --> Agent["🤖 Agente ReAct (GuardSeguro Evaluator)"]',
     ]
 
     prev_node = "Agent"
@@ -366,7 +366,7 @@ def format_reasoning_flow_mermaid(assessment: ClaimAssessment) -> str:
         )
 
     mermaid_lines.append(
-        f'    {final_node} --> HITL["👤 Human-in-the-loop (Gestor Allianz)"]'
+        f'    {final_node} --> HITL["👤 Human-in-the-loop (Gestor Aseguradora)"]'
     )
     mermaid_lines.append("```")
 

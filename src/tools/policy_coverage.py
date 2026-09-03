@@ -1,4 +1,4 @@
-"""Policy coverage verification tool for Allianz Spain insurance claims.
+"""Policy coverage verification tool for GuardSeguro Seguros insurance claims.
 
 Provides deterministic checking of policy terms, coverage conditions, and standard
 deductibles against structured policy catalogs for Auto and Hogar lines of business.
@@ -95,7 +95,7 @@ def verify_policy_coverage(
     policy_type: str = "Auto",
     catalog: Optional[Dict[str, Any]] = None,
 ) -> CoverageCheckResult:
-    """Evaluate whether a reported damage or incident type is covered under Allianz policies.
+    """Evaluate whether a reported damage or incident type is covered under GuardSeguro policies.
 
     Args:
         damage_type: Description or category of the incident/damage reported.
@@ -179,9 +179,9 @@ def verify_policy_coverage(
 
 @tool
 def check_policy_coverage(damage_type: str, policy_type: str = "Auto") -> str:
-    """Verifica si un tipo de siniestro o daño específico tiene cobertura en la póliza de Allianz.
+    """Verifica si un tipo de siniestro o daño específico tiene cobertura en la póliza de GuardSeguro.
 
-    Utiliza el catálogo oficial de coberturas y exclusiones de Allianz Spain para determinar
+    Utiliza el catálogo oficial de coberturas y exclusiones de GuardSeguro Seguros para determinar
     si el incidente (ej. rotura de lunas, granizo, colisión, robo, vandalismo, etc.) está cubierto,
     junto con sus condiciones aplicables y la franquicia estándar correspondiente.
 
