@@ -88,3 +88,27 @@ class TestKnowledgeTab:
 
         # Should execute without any exceptions
         render_knowledge_tab()
+
+    @patch("streamlit.html")
+    def test_render_html_uses_st_html_when_available(self, mock_html):
+        """Verify _render_html calls st.html directly when present."""
+        from src.ui.knowledge_tab import _render_html
+        _render_html("<div>test content</div>")
+        mock_html.assert_called_once_with("<div>test content</div>")
+
+    @patch("streamlit.markdown")
+    def test_render_html_fallback_to_markdown(self, mock_markdown):
+        """Verify _render_html falls back to st.markdown when st.html is absent."""
+        import streamlit as st
+        from src.ui.knowledge_tab import _render_html
+
+        original_html = getattr(st, "html", None)
+        try:
+            if hasattr(st, "html"):
+                delattr(st, "html")
+            _render_html("<div>test content</div>")
+            mock_markdown.assert_called_once_with("<div>test content</div>", unsafe_allow_html=True)
+        finally:
+            if original_html is not None:
+                st.html = original_html
+

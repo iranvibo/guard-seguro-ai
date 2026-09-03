@@ -104,3 +104,8 @@ Agente evaluador de siniestros de seguros con filtros de gobernanza e IA respons
     5. **🛡️ 5. Gobernanza e IA Responsable**: Pilares de Privacidad/RGPD (Art. 10), Human-in-the-Loop (Art. 14), Transparencia/Trazabilidad (Art. 12/13) y Matriz completa de cumplimiento del EU AI Act.
 - **Renombrado del Proyecto y Entorno Docker (`guard-seguro-ai`)**:
   - Al renombrar la carpeta del proyecto a `guard-seguro-ai`, se purgó el contenedor y la imagen huérfana de la versión previa (`allianz-python-guardseguro-ai`) con `docker rm -f guardseguro-ai-app` y `docker rmi`. Reconstrucción y despliegue exitoso con `docker compose up -d --build`, estado `healthy` y 198 tests verificados al 100%.
+- **Renderizado de HTML en Base de Conocimiento (`_render_html` y Prevención de Bloques de Código en Markdown)**:
+  - **Problema**: En `src/ui/knowledge_tab.py`, las tarjetas de los pasos 2 a 4 del Protocolo ReAct se mostraban como bloques de código Markdown (`<pre><code>`) con el HTML sin interpretar.
+  - **Causa Raíz**: En el estándar CommonMark que usa Streamlit, una línea en blanco dentro de un bloque HTML interrumpe el contexto HTML. Si las siguientes líneas tienen 4 o más espacios de sangría (e.g. 16 espacios), CommonMark las procesa como bloques de código indentados.
+  - **Solución**: Se implementó la función auxiliar `_render_html(html_str)` que usa `st.html(html_str)` (nativo de Streamlit 1.34+, sin interpretación Markdown) con fallback a `st.markdown(html_str, unsafe_allow_html=True)`. Además, se eliminaron los saltos de línea en blanco y la sangría excesiva en las definiciones HTML. Se añadieron 2 tests unitarios en `tests/test_ui_knowledge.py` con 200 tests totales pasando al 100% en Docker.
+

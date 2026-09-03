@@ -12,6 +12,14 @@ from src.tools.repair_calculator import load_repair_rates
 from src.tools.risk_assessor import DISPUTE_INDICATORS, SEVERITY_AND_FRAUD_INDICATORS
 
 
+def _render_html(html_str: str) -> None:
+    """Render HTML string safely using st.html if supported or st.markdown fallback."""
+    if hasattr(st, "html"):
+        st.html(html_str)
+    else:
+        st.markdown(html_str, unsafe_allow_html=True)
+
+
 def render_knowledge_tab() -> None:
     """Render the Knowledge Base & Decision Rules tab."""
     st.markdown("### 📚 Base de Conocimiento & Reglas de Decisión del Agente")
@@ -62,80 +70,74 @@ def render_knowledge_tab() -> None:
             "objetivas, eficientes y alineadas con las directrices de **GuardSeguro Seguros**:"
         )
 
-        st.markdown(
-            """
-            <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
-                <!-- Paso 1 -->
-                <div style="background: rgba(0, 55, 129, 0.05); border-left: 5px solid #003781; border-radius: 8px; padding: 1rem 1.2rem;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-                        <strong style="color: #003781; font-size: 1.05rem;">
-                            1️⃣ Paso 1 — Verificación de Cobertura y Regla de Poda Inmediata (Short-Circuiting)
-                        </strong>
-                        <span style="background: #003781; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
-                            check_policy_coverage
-                        </span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
-                        Analiza la causa raíz y tipo de daño reportado junto con el ramo de la póliza (Auto vs Hogar).
-                    </p>
-                    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(239, 68, 68, 0.08); border-left: 3px solid #EF4444; padding: 0.5rem; border-radius: 4px;">
-                        <strong>🛑 Regla de Parada Inmediata (Short-Circuiting):</strong> Si la póliza excluye el daño (ej. desgaste, avería mecánica, alcohol) o no tiene cobertura, el flujo se detiene inmediatamente. Se emite <code>status: 'Denegado'</code> (0,00 €) y <strong>queda estrictamente prohibido invocar herramientas adicionales</strong>.
-                    </div>
-                </div>
-
-                <!-- Paso 2 -->
-                <div style="background: rgba(245, 158, 11, 0.05); border-left: 5px solid #F59E0B; border-radius: 8px; padding: 1rem 1.2rem;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-                        <strong style="color: #92400E; font-size: 1.05rem;">
-                            2️⃣ Paso 2 — Evaluación Obligatoria de Riesgos y Controversias
-                        </strong>
-                        <span style="background: #D97706; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
-                            assess_claim_risk_and_dispute
-                        </span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
-                        <strong>Obligatorio si tiene cobertura:</strong> Evalúa si existen versiones contradictorias, ausencia de atestado policial concluyente, denuncias de terceros, sospechas de fraude o daños estructurales en chasis/inmuebles.
-                    </p>
-                    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #F59E0B; padding: 0.5rem; border-radius: 4px;">
-                        <strong>🔍 Criterio de Peritaje:</strong> Si detecta controversia o daño severo (<code>requiere_peritaje: true</code>), el dictamen se fija en <code>status: 'Requiere Peritaje'</code>, retención cautelar de pago (0,00 €) y <strong>se cancela la estimación automática de baremos</strong>.
-                    </div>
-                </div>
-
-                <!-- Paso 3 -->
-                <div style="background: rgba(16, 185, 129, 0.05); border-left: 5px solid #10B981; border-radius: 8px; padding: 1rem 1.2rem;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-                        <strong style="color: #065F46; font-size: 1.05rem;">
-                            3️⃣ Paso 3 — Estimación Económica Oficial de Reparación
-                        </strong>
-                        <span style="background: #059669; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
-                            calculate_repair_estimate
-                        </span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
-                        <strong>Solo si el siniestro está cubierto y NO requiere peritaje:</strong> Consulta la base de datos de baremos oficiales de GuardSeguro por zona dañada y nivel de gravedad (Leve, Moderado, Grave), deduciendo la franquicia contratada.
-                    </p>
-                    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981; padding: 0.5rem; border-radius: 4px;">
-                        <strong>⚡ Regla de Eficiencia (Cero Redundancia):</strong> Máximo 1 llamada por siniestro estándar (o 2 llamadas para granizo multizona: luna delantera + chapa). Tras obtener los importes, se detienen todas las herramientas.
-                    </div>
-                </div>
-
-                <!-- Paso 4 -->
-                <div style="background: rgba(0, 122, 179, 0.05); border-left: 5px solid #007AB3; border-radius: 8px; padding: 1rem 1.2rem;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
-                        <strong style="color: #007AB3; font-size: 1.05rem;">
-                            4️⃣ Paso 4 — Dictamen Estructurado JSON & Supervisión Humana
-                        </strong>
-                        <span style="background: #007AB3; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
-                            Art. 14 EU AI Act
-                        </span>
-                    </div>
-                    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
-                        Emisión del dictamen formal en JSON estricto con desglose económico, razonamiento transparente y propuesta redactada expresamente para la <strong>revisión y validación por el gestor humano</strong> (Human-in-the-Loop).
-                    </p>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
+        _render_html(
+            """<div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem;">
+<!-- Paso 1 -->
+<div style="background: rgba(0, 55, 129, 0.05); border-left: 5px solid #003781; border-radius: 8px; padding: 1rem 1.2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+        <strong style="color: #003781; font-size: 1.05rem;">
+            1️⃣ Paso 1 — Verificación de Cobertura y Regla de Poda Inmediata (Short-Circuiting)
+        </strong>
+        <span style="background: #003781; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
+            check_policy_coverage
+        </span>
+    </div>
+    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
+        Analiza la causa raíz y tipo de daño reportado junto con el ramo de la póliza (Auto vs Hogar).
+    </p>
+    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(239, 68, 68, 0.08); border-left: 3px solid #EF4444; padding: 0.5rem; border-radius: 4px;">
+        <strong>🛑 Regla de Parada Inmediata (Short-Circuiting):</strong> Si la póliza excluye el daño (ej. desgaste, avería mecánica, alcohol) o no tiene cobertura, el flujo se detiene inmediatamente. Se emite <code>status: 'Denegado'</code> (0,00 €) y <strong>queda estrictamente prohibido invocar herramientas adicionales</strong>.
+    </div>
+</div>
+<!-- Paso 2 -->
+<div style="background: rgba(245, 158, 11, 0.05); border-left: 5px solid #F59E0B; border-radius: 8px; padding: 1rem 1.2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+        <strong style="color: #92400E; font-size: 1.05rem;">
+            2️⃣ Paso 2 — Evaluación Obligatoria de Riesgos y Controversias
+        </strong>
+        <span style="background: #D97706; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
+            assess_claim_risk_and_dispute
+        </span>
+    </div>
+    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
+        <strong>Obligatorio si tiene cobertura:</strong> Evalúa si existen versiones contradictorias, ausencia de atestado policial concluyente, denuncias de terceros, sospechas de fraude o daños estructurales en chasis/inmuebles.
+    </p>
+    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(245, 158, 11, 0.1); border-left: 3px solid #F59E0B; padding: 0.5rem; border-radius: 4px;">
+        <strong>🔍 Criterio de Peritaje:</strong> Si detecta controversia o daño severo (<code>requiere_peritaje: true</code>), el dictamen se fija en <code>status: 'Requiere Peritaje'</code>, retención cautelar de pago (0,00 €) y <strong>se cancela la estimación automática de baremos</strong>.
+    </div>
+</div>
+<!-- Paso 3 -->
+<div style="background: rgba(16, 185, 129, 0.05); border-left: 5px solid #10B981; border-radius: 8px; padding: 1rem 1.2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+        <strong style="color: #065F46; font-size: 1.05rem;">
+            3️⃣ Paso 3 — Estimación Económica Oficial de Reparación
+        </strong>
+        <span style="background: #059669; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
+            calculate_repair_estimate
+        </span>
+    </div>
+    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
+        <strong>Solo si el siniestro está cubierto y NO requiere peritaje:</strong> Consulta la base de datos de baremos oficiales de GuardSeguro por zona dañada y nivel de gravedad (Leve, Moderado, Grave), deduciendo la franquicia contratada.
+    </p>
+    <div style="margin-top: 0.5rem; font-size: 0.88rem; background: rgba(16, 185, 129, 0.1); border-left: 3px solid #10B981; padding: 0.5rem; border-radius: 4px;">
+        <strong>⚡ Regla de Eficiencia (Cero Redundancia):</strong> Máximo 1 llamada por siniestro estándar (o 2 llamadas para granizo multizona: luna delantera + chapa). Tras obtener los importes, se detienen todas las herramientas.
+    </div>
+</div>
+<!-- Paso 4 -->
+<div style="background: rgba(0, 122, 179, 0.05); border-left: 5px solid #007AB3; border-radius: 8px; padding: 1rem 1.2rem;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+        <strong style="color: #007AB3; font-size: 1.05rem;">
+            4️⃣ Paso 4 — Dictamen Estructurado JSON & Supervisión Humana
+        </strong>
+        <span style="background: #007AB3; color: white; border-radius: 12px; padding: 2px 10px; font-size: 0.75rem; font-family: monospace;">
+            Art. 14 EU AI Act
+        </span>
+    </div>
+    <p style="margin: 0; font-size: 0.92rem; color: #1F2937;">
+        Emisión del dictamen formal en JSON estricto con desglose económico, razonamiento transparente y propuesta redactada expresamente para la <strong>revisión y validación por el gestor humano</strong> (Human-in-the-Loop).
+    </p>
+</div>
+</div>"""
         )
 
         st.markdown("#### ⚡ Principios de Ejecución y Eficiencia")
@@ -255,7 +257,7 @@ def render_knowledge_tab() -> None:
         st.markdown("#### 💶 Baremos Oficiales de Reparación y Costes de Taller")
         st.caption("Tablas de cálculo determinista para piezas, materiales y mano de obra con tarifa unificada.")
 
-        st.markdown(
+        _render_html(
             f"""
             <div style="background: rgba(0, 55, 129, 0.05); border: 1px solid rgba(0, 55, 129, 0.2); border-radius: 8px; padding: 0.9rem 1.2rem; margin-bottom: 1rem;">
                 <strong style="color: #003781;">📐 Fórmula Matemática Oficial:</strong>
@@ -265,8 +267,7 @@ def render_knowledge_tab() -> None:
                     <li><strong>Tarifa Horaria de Mano de Obra GuardSeguro:</strong> <code>{hourly_rate:.2f} €/hora</code></li>
                 </ul>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         col_b_filter, col_b_zone = st.columns([1, 2])
@@ -355,7 +356,7 @@ def render_knowledge_tab() -> None:
             "que motivan la suspensión del pago automático y la derivación a perito presencial."
         )
 
-        st.markdown(
+        _render_html(
             """
             <div style="background: rgba(245, 158, 11, 0.08); border-left: 5px solid #F59E0B; border-radius: 8px; padding: 1rem; margin-bottom: 1.2rem;">
                 <strong style="color: #92400E; font-size: 1rem;">⚖️ Criterio de Retención Cautelar de Pago:</strong>
@@ -368,8 +369,7 @@ def render_knowledge_tab() -> None:
                     <li>Se emite una orden de inspección física presencial o traslado a la asesoría jurídica.</li>
                 </ul>
             </div>
-            """,
-            unsafe_allow_html=True,
+            """
         )
 
         col_d1, col_d2 = st.columns(2)
@@ -402,7 +402,7 @@ def render_knowledge_tab() -> None:
         g_col1, g_col2, g_col3 = st.columns(3)
 
         with g_col1:
-            st.markdown(
+            _render_html(
                 """
                 <div style="background: rgba(0, 55, 129, 0.05); border-top: 4px solid #003781; border-radius: 8px; padding: 1rem; height: 100%;">
                     <h5 style="color: #003781; margin: 0 0 0.5rem 0;">🔒 Privacidad y RGPD</h5>
@@ -415,12 +415,11 @@ def render_knowledge_tab() -> None:
                         <li>Sustitución por pseudo-tokens deterministas reversibles en servidor seguro.</li>
                     </ul>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
         with g_col2:
-            st.markdown(
+            _render_html(
                 """
                 <div style="background: rgba(0, 122, 179, 0.05); border-top: 4px solid #007AB3; border-radius: 8px; padding: 1rem; height: 100%;">
                     <h5 style="color: #007AB3; margin: 0 0 0.5rem 0;">👤 Human-in-the-Loop</h5>
@@ -433,12 +432,11 @@ def render_knowledge_tab() -> None:
                         <li>El tramitador tiene facultad de validar, ajustar importes, derivar a perito o rechazar.</li>
                     </ul>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
         with g_col3:
-            st.markdown(
+            _render_html(
                 """
                 <div style="background: rgba(16, 185, 129, 0.05); border-top: 4px solid #10B981; border-radius: 8px; padding: 1rem; height: 100%;">
                     <h5 style="color: #065F46; margin: 0 0 0.5rem 0;">🔍 Transparencia & Trazabilidad</h5>
@@ -451,8 +449,7 @@ def render_knowledge_tab() -> None:
                         <li>Exportación en un solo clic del informe técnico auditable en JSON estándar.</li>
                     </ul>
                 </div>
-                """,
-                unsafe_allow_html=True,
+                """
             )
 
         st.markdown("---")
